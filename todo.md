@@ -1,0 +1,27 @@
+# TODO
+
+## In Progress
+- 
+
+## Pending
+### Pages to Build
+- **Dictionary Page** (panelDictionaryPage) - will be the place where the user can save custom words that the ai doesnt understand
+- **Snippets Page** (panelSnippetsPage) - will be the place where the user can add kind of shortcut words for longer things: e.g 'Twitter' - adds twitter link to the message
+- **Style Page** (panelStylePage) - user will be able to configure how the speech should be transcribed: formal, informal etc.
+- **Settings Page** (panelSettingsPage) - general user settings, change push to talk shortcut etc (will have to think)
+
+### Other
+- **Home page stats**
+- **Add whisper voice model**
+- **Add ai correction and punctuation**
+- **Speech bubble** (speech overlay) - fix the animation and the diff states (+ add an idle state)
+
+## Completed
+- **Login Form** (Form1) - Complete with authentication
+- **Home Page Base** (panelHomePage) - Complete with speech history, stats, and welcome message
+---
+
+## Notes
+- Dictionary, Snippets, Style, and Settings pages currently only have placeholder content created in `CreatePlaceholderPage()` method
+- All pages are Panel controls docked to fill `panelMain` in DashboardForm
+- Navigation between pages is already implemented via sidebar navigation
