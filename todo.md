@@ -11,12 +11,12 @@
 - **Settings Page** (panelSettingsPage) - general user settings, change push to talk shortcut etc (will have to think)
 
 ### Other
-- **Home page stats**
 - **Add whisper voice model**
 - **Add ai correction and punctuation**
 - **Speech bubble** (speech overlay) - fix the animation and the diff states (+ add an idle state)
 
 ## Completed
+- **Home page stats**
 - **Login Form** (Form1) - Complete with authentication
 - **Home Page Base** (panelHomePage) - Complete with speech history, stats, and welcome message
 ---

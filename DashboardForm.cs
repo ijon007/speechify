@@ -16,6 +16,7 @@ public partial class DashboardForm : Form
   private Label? loadingLabel;
   private Panel? activePagePanel;
   private Label? activeNavItem;
+  private DateTime? recordingStartTime;
 
   public DashboardForm(string username)
   {
@@ -259,6 +260,7 @@ public partial class DashboardForm : Form
     try
     {
       recognizedText = null;
+      recordingStartTime = DateTime.Now;
       
       // Save the foreground window BEFORE showing overlay
       // This ensures we capture the window that was active when user pressed hotkey
@@ -290,16 +292,24 @@ public partial class DashboardForm : Form
       // Increased delay to 1000ms to give more time for recognition processing
       await Task.Delay(1000);
       
+      // Calculate duration if we have a start time
+      int? duration = null;
+      if (recordingStartTime.HasValue)
+      {
+        duration = (int)(DateTime.Now - recordingStartTime.Value).TotalMilliseconds;
+      }
+      
       // Inject recognized text if available
       if (!string.IsNullOrEmpty(recognizedText))
       {
         textInjectionService.InjectText(recognizedText);
-        SaveSpeechToDatabase(recognizedText);
+        SaveSpeechToDatabase(recognizedText, duration);
         AddSpeechToHistory(recognizedText);
       }
 
       overlayForm.Hide();
       recognizedText = null;
+      recordingStartTime = null;
     }
     catch (Exception ex)
     {
@@ -426,6 +436,46 @@ public partial class DashboardForm : Form
     
     // Load sample speech entries
     LoadSpeechHistory();
+    
+    // Load and display statistics
+    RefreshStats();
+  }
+
+  private void RefreshStats()
+  {
+    if (databaseService == null)
+      return;
+
+    try
+    {
+      // Get consecutive weeks streak
+      int weeksStreak = databaseService.GetConsecutiveWeeksStreak(username);
+      lblStatWeeks.Text = weeksStreak == 1 ? "🔥 1 week" : $"🔥 {weeksStreak} weeks";
+
+      // Get total words
+      int totalWords = databaseService.GetTotalWords(username);
+      if (totalWords >= 1000)
+      {
+        double wordsK = totalWords / 1000.0;
+        lblStatWords.Text = $"🚀 {wordsK:F1}K words";
+      }
+      else
+      {
+        lblStatWords.Text = $"🚀 {totalWords} words";
+      }
+
+      // Get average WPM
+      int averageWPM = databaseService.GetAverageWPM(username);
+      lblStatWPM.Text = $"🏆 {averageWPM} WPM";
+    }
+    catch (Exception ex)
+    {
+      System.Diagnostics.Debug.WriteLine($"Failed to refresh stats: {ex.Message}");
+      // Set default values on error
+      lblStatWeeks.Text = "🔥 0 weeks";
+      lblStatWords.Text = "🚀 0 words";
+      lblStatWPM.Text = "🏆 0 WPM";
+    }
   }
 
   private void LoadSpeechHistory()
@@ -471,11 +521,11 @@ public partial class DashboardForm : Form
     }
   }
 
-  private void SaveSpeechToDatabase(string text)
+  private void SaveSpeechToDatabase(string text, int? duration = null)
   {
     if (databaseService != null && !string.IsNullOrWhiteSpace(text))
     {
-      databaseService.SaveSpeech(username, text);
+      databaseService.SaveSpeech(username, text, duration);
     }
   }
 
@@ -700,6 +750,9 @@ public partial class DashboardForm : Form
 
     // Scroll to top
     panelSpeechHistory.AutoScrollPosition = new Point(0, 0);
+    
+    // Refresh statistics after adding new speech
+    RefreshStats();
   }
 
   private void InitializePages()
