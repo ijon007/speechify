@@ -14,24 +14,132 @@ public partial class DashboardForm : Form
   private DatabaseService? databaseService;
   private Panel? loadingPanel;
   private Label? loadingLabel;
+  private Panel? activePagePanel;
+  private Label? activeNavItem;
 
   public DashboardForm(string username)
   {
     this.username = username;
     InitializeComponent();
+    SetupRoundedCornersForPages();
     SetupWindowControls();
+    
+    // Prevent focus rectangles on buttons
+    btnClose.TabStop = false;
+    btnMinimize.TabStop = false;
     
     // Set custom icon from assets folder
     string iconPath = Path.Combine(Application.StartupPath, "assets", "cp-black.ico");
     if (File.Exists(iconPath))
     {
       this.Icon = new Icon(iconPath);
+      // Load logo into PictureBox
+      try
+      {
+        using (Icon icon = new Icon(iconPath, 32, 32))
+        {
+          picLogo.Image = icon.ToBitmap();
+        }
+      }
+      catch
+      {
+        // If loading fails, try loading as image directly
+        try
+        {
+          picLogo.Image = Image.FromFile(iconPath);
+        }
+        catch
+        {
+          // If both methods fail, leave PictureBox empty
+        }
+      }
     }
     
     databaseService = new DatabaseService();
+    InitializePages();
     LoadDashboardData();
     InitializeLoadingUI();
     InitializeSpeechServicesAsync();
+  }
+
+  private void ApplyRoundedCorners(Panel panel, int radius)
+  {
+    if (panel.Width <= 0 || panel.Height <= 0) return;
+    
+    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+    path.AddArc(0, 0, radius * 2, radius * 2, 180, 90);
+    path.AddArc(panel.Width - radius * 2, 0, radius * 2, radius * 2, 270, 90);
+    path.AddArc(panel.Width - radius * 2, panel.Height - radius * 2, radius * 2, radius * 2, 0, 90);
+    path.AddArc(0, panel.Height - radius * 2, radius * 2, radius * 2, 90, 90);
+    path.CloseAllFigures();
+    panel.Region = new System.Drawing.Region(path);
+  }
+
+  private void PanelPage_Paint(object? sender, PaintEventArgs e)
+  {
+    if (sender is Panel panel)
+    {
+      DrawRoundedBorder(panel, e.Graphics, 10, Color.FromArgb(200, 200, 200));
+    }
+  }
+
+  private void DrawRoundedBorder(Panel panel, Graphics g, int radius, Color borderColor)
+  {
+    using (Pen pen = new Pen(borderColor, 1))
+    {
+      // Draw rounded rectangle border
+      System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+      Rectangle rect = new Rectangle(0, 0, panel.Width - 1, panel.Height - 1);
+      
+      path.AddArc(rect.X, rect.Y, radius * 2, radius * 2, 180, 90);
+      path.AddArc(rect.Right - radius * 2, rect.Y, radius * 2, radius * 2, 270, 90);
+      path.AddArc(rect.Right - radius * 2, rect.Bottom - radius * 2, radius * 2, radius * 2, 0, 90);
+      path.AddArc(rect.X, rect.Bottom - radius * 2, radius * 2, radius * 2, 90, 90);
+      path.CloseAllFigures();
+      
+      g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+      g.DrawPath(pen, path);
+    }
+  }
+
+  private void PanelPage_Resize(object? sender, EventArgs e)
+  {
+    if (sender is Panel panel)
+    {
+      ApplyRoundedCorners(panel, 10);
+      
+      // Ensure panelSpeechHistory stays within homePage border bounds
+      if (panel == panelHomePage && panelSpeechHistory != null)
+      {
+        int paddingLeft = 40;
+        int paddingRight = 40;
+        int paddingTop = 60;
+        int paddingBottom = 50;
+        int speechHistoryTop = 220; // Y position of panelSpeechHistory
+        
+        // Calculate available width and height accounting for padding
+        int availableWidth = panel.ClientSize.Width - paddingLeft - paddingRight;
+        // Available height = total height - top padding - space above speech history - bottom padding
+        int availableHeight = panel.ClientSize.Height - paddingTop - (speechHistoryTop - paddingTop) - paddingBottom;
+        
+        // Update panelSpeechHistory size to stay within bounds
+        panelSpeechHistory.Width = availableWidth;
+        panelSpeechHistory.Height = Math.Max(0, availableHeight);
+      }
+    }
+  }
+
+  private void SetupRoundedCornersForPages()
+  {
+    // Apply rounded corners to all page panels
+    Panel[] pagePanels = { panelHomePage, panelDictionaryPage, panelSnippetsPage, panelStylePage, panelSettingsPage };
+    
+    foreach (Panel panel in pagePanels)
+    {
+      panel.Resize += PanelPage_Resize;
+      panel.Paint += PanelPage_Paint;
+      ApplyRoundedCorners(panel, 10);
+    }
   }
 
   private void InitializeLoadingUI()
@@ -124,8 +232,16 @@ public partial class DashboardForm : Form
     {
       hotkeyManager?.ProcessMessage(m.Msg, m.WParam, m.LParam);
     }
+    // Prevent focus border from showing on borderless form
+    else if (m.Msg == WindowsApiHelper.WM_NCACTIVATE)
+    {
+      m.Result = new IntPtr(1); // Always return true to prevent focus border
+      return;
+    }
     base.WndProc(ref m);
   }
+  
+  protected override bool ShowFocusCues => false;
 
   private void HotkeyManager_HotkeyPressed(object? sender, EventArgs e)
   {
@@ -223,44 +339,52 @@ public partial class DashboardForm : Form
     overlayForm.SetRecognizedText(recognizedText);
   }
 
-  private Point mouseOffset;
-  private bool isDragging = false;
-
   private void SetupWindowControls()
   {
-    // Enable window dragging
-    this.MouseDown += DashboardForm_MouseDown;
-    this.MouseMove += DashboardForm_MouseMove;
-    this.MouseUp += DashboardForm_MouseUp;
+    // Enable dragging from top ribbon panel (acts like native title bar)
+    panelTopRibbon.MouseDown += PanelTopRibbon_MouseDown;
+    
+    // Ensure buttons stay on top and are clickable
+    btnClose.BringToFront();
+    btnMinimize.BringToFront();
+  }
+  
+  private void PanelTopRibbon_MouseDown(object? sender, MouseEventArgs e)
+  {
+    if (e.Button == MouseButtons.Left)
+    {
+      // Don't drag if clicking directly on buttons
+      if (sender == btnClose || sender == btnMinimize)
+        return;
+      
+      // Convert to form coordinates to check button positions
+      Control? sourceControl = sender as Control;
+      if (sourceControl != null)
+      {
+        Point formPoint = sourceControl.PointToScreen(e.Location);
+        formPoint = this.PointToClient(formPoint);
+        
+        // Allow dragging everywhere except button area (x >= 1140)
+        if (formPoint.X < 1140)
+        {
+          WindowsApiHelper.ReleaseCapture();
+          WindowsApiHelper.SendMessage(this.Handle, WindowsApiHelper.WM_NCLBUTTONDOWN, 
+            WindowsApiHelper.HT_CAPTION, 0);
+        }
+      }
+    }
   }
 
   private void DashboardForm_MouseDown(object? sender, MouseEventArgs e)
   {
-    // Only allow dragging from the top area (title bar area)
-    if (e.Button == MouseButtons.Left && e.Y <= 40)
-    {
-      mouseOffset = new Point(e.X, e.Y);
-      isDragging = true;
-    }
-  }
-
-  private void DashboardForm_MouseMove(object? sender, MouseEventArgs e)
-  {
-    if (isDragging)
-    {
-      Point mousePos = MousePosition;
-      mousePos.Offset(-mouseOffset.X, -mouseOffset.Y);
-      this.Location = mousePos;
-    }
-  }
-
-  private void DashboardForm_MouseUp(object? sender, MouseEventArgs e)
-  {
-    isDragging = false;
+    // This method is kept for backward compatibility but is no longer the primary handler
+    // The top ribbon panel now handles its own dragging via PanelTopRibbon_MouseDown
   }
 
   private void btnClose_Click(object? sender, EventArgs e)
   {
+    // Remove focus from button before closing
+    this.Focus();
     this.Close();
   }
 
@@ -278,6 +402,8 @@ public partial class DashboardForm : Form
 
   private void btnMinimize_Click(object? sender, EventArgs e)
   {
+    // Remove focus from button before minimizing
+    this.Focus();
     this.WindowState = FormWindowState.Minimized;
   }
 
@@ -310,38 +436,49 @@ public partial class DashboardForm : Form
     var speeches = databaseService.GetSpeeches(username);
 
     int yOffset = 10;
+    const int spacingBetweenItems = 30; // Consistent spacing between transcription items
+    
     foreach (var speech in speeches)
     {
       // Create a temporary label to measure text height
+      int availableWidth = panelSpeechHistory.ClientSize.Width - 20;
       Label tempLabel = new Label();
       tempLabel.Text = speech.text;
       tempLabel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
       tempLabel.AutoSize = true;
-      tempLabel.MaximumSize = new Size(panelSpeechHistory.Width - 80, 0);
+      tempLabel.MaximumSize = new Size(availableWidth - 80, 0);
       
       CreateSpeechRow(speech.id, speech.time, speech.text, yOffset);
       
-      // Calculate next position based on text height
-      yOffset += 20 + tempLabel.Height + 20; // timestamp + text + spacing
+      // Calculate panel height: padding (20) + timestamp (20) + text height + button area (40) + padding (20)
+      int panelHeight = 20 + 20 + tempLabel.Height + 40 + 20;
+      // Calculate next position: panel height + spacing between items
+      yOffset += panelHeight + spacingBetweenItems;
       
       tempLabel.Dispose();
     }
   }
 
-  // Sidebar navigation hover effects (non-functional for now)
+  // Sidebar navigation hover effects
   private void navItem_MouseEnter(object? sender, EventArgs e)
   {
     if (sender is Label label)
     {
       label.BackColor = Color.FromArgb(245, 245, 245);
+      label.ForeColor = Color.Black;
     }
   }
 
   private void navItem_MouseLeave(object? sender, EventArgs e)
   {
-    if (sender is Label label && label != lblNavHome)
+    if (sender is Label label)
     {
-      label.BackColor = Color.Transparent;
+      // Only restore gray if it's not the active navigation item
+      if (activeNavItem == null || label != activeNavItem)
+      {
+        label.BackColor = Color.Transparent;
+        label.ForeColor = Color.FromArgb(100, 100, 100);
+      }
     }
   }
 
@@ -355,23 +492,48 @@ public partial class DashboardForm : Form
 
   private void CreateSpeechRow(int id, string time, string text, int yOffset)
   {
+    // Calculate available width accounting for padding and scrollbar
+    int availableWidth = panelSpeechHistory.ClientSize.Width - 20; // 10px padding on each side
+    
+    // Create a temporary label to measure text height
+    Label tempLabel = new Label();
+    tempLabel.Text = text;
+    tempLabel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    tempLabel.AutoSize = true;
+    // Account for: left padding (10) + button area (50) + right padding (10) + spacing (10)
+    tempLabel.MaximumSize = new Size(availableWidth - 80, 0);
+    
+    // Calculate panel height: padding (20) + timestamp (20) + text height + button area (40) + padding (20)
+    int panelHeight = 20 + 20 + tempLabel.Height + 40 + 20;
+    tempLabel.Dispose();
+
+    // Create container panel for this speech entry
+    Panel entryPanel = new Panel();
+    entryPanel.BackColor = Color.White;
+    entryPanel.Location = new Point(10, yOffset);
+    entryPanel.Size = new Size(availableWidth, panelHeight);
+    entryPanel.Name = $"panelEntry_{id}";
+    entryPanel.Paint += EntryPanel_Paint;
+
     // Create timestamp label
     Label lblTime = new Label();
     lblTime.Text = time;
     lblTime.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
     lblTime.ForeColor = Color.FromArgb(100, 100, 100);
-    lblTime.Location = new Point(10, yOffset);
+    lblTime.Location = new Point(10, 10);
     lblTime.AutoSize = true;
     lblTime.Name = $"lblTime_{id}";
 
-    // Create text label
+    // Create text label - ensure it doesn't overlap with button
+    // Button is at Width - 50, button width is 30, so text max width = Width - 50 - 30 - 10 (spacing) - 10 (left padding)
+    int textMaxWidth = entryPanel.Width - 100;
     Label lblText = new Label();
     lblText.Text = text;
     lblText.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblText.ForeColor = Color.FromArgb(45, 45, 48);
-    lblText.Location = new Point(10, yOffset + 20);
+    lblText.Location = new Point(10, 30);
     lblText.AutoSize = true;
-    lblText.MaximumSize = new Size(panelSpeechHistory.Width - 80, 0);
+    lblText.MaximumSize = new Size(textMaxWidth, 0);
     lblText.Name = $"lblText_{id}";
 
     // Create copy button
@@ -387,8 +549,8 @@ public partial class DashboardForm : Form
     btnCopy.Name = $"btnCopy_{id}";
     
     // Position button next to the text (right side)
-    int buttonX = panelSpeechHistory.Width - 50;
-    int buttonY = yOffset + 20;
+    int buttonX = entryPanel.Width - 50;
+    int buttonY = 30;
     btnCopy.Location = new Point(buttonX, buttonY);
     
     // Store the text in Tag for easy access
@@ -397,9 +559,25 @@ public partial class DashboardForm : Form
     btnCopy.MouseEnter += BtnCopy_MouseEnter;
     btnCopy.MouseLeave += BtnCopy_MouseLeave;
 
-    panelSpeechHistory.Controls.Add(lblTime);
-    panelSpeechHistory.Controls.Add(lblText);
-    panelSpeechHistory.Controls.Add(btnCopy);
+    // Add controls to entry panel
+    entryPanel.Controls.Add(lblTime);
+    entryPanel.Controls.Add(lblText);
+    entryPanel.Controls.Add(btnCopy);
+
+    // Add entry panel to speech history panel
+    panelSpeechHistory.Controls.Add(entryPanel);
+  }
+
+  private void EntryPanel_Paint(object? sender, PaintEventArgs e)
+  {
+    if (sender is Panel panel)
+    {
+      // Draw only bottom border with no rounding
+      using (Pen pen = new Pen(Color.FromArgb(200, 200, 200), 1))
+      {
+        e.Graphics.DrawLine(pen, 0, panel.Height - 1, panel.Width, panel.Height - 1);
+      }
+    }
   }
 
   private void BtnCopy_Click(object? sender, EventArgs e)
@@ -459,19 +637,144 @@ public partial class DashboardForm : Form
 
     // Calculate position (add at top)
     int yOffset = 10;
+    const int spacingBetweenItems = 35; // Consistent spacing between transcription items
 
-    // Move existing controls down
-    int textHeight = 40; // Default height
+    // Calculate the height of the new item to move existing controls down
+    int availableWidth = panelSpeechHistory.ClientSize.Width - 20;
+    Label tempLabel = new Label();
+    tempLabel.Text = text;
+    tempLabel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    tempLabel.AutoSize = true;
+    tempLabel.MaximumSize = new Size(availableWidth - 80, 0);
+    
+    // Calculate panel height: padding (20) + timestamp (20) + text height + button area (40) + padding (20)
+    int panelHeight = 20 + 20 + tempLabel.Height + 40 + 20;
+    int newItemHeight = panelHeight + spacingBetweenItems;
+    
+    // Move existing controls down by the height of the new item
     foreach (Control control in panelSpeechHistory.Controls)
     {
-      control.Location = new Point(control.Location.X, control.Location.Y + textHeight + 40);
+      control.Location = new Point(control.Location.X, control.Location.Y + newItemHeight);
     }
+    
+    tempLabel.Dispose();
 
     // Create the new speech row
     CreateSpeechRow(tempId, time, text, yOffset);
 
     // Scroll to top
     panelSpeechHistory.AutoScrollPosition = new Point(0, 0);
+  }
+
+  private void InitializePages()
+  {
+    // Set up placeholder content for other pages
+    CreatePlaceholderPage(panelDictionaryPage, "Dictionary");
+    CreatePlaceholderPage(panelSnippetsPage, "Snippets");
+    CreatePlaceholderPage(panelStylePage, "Style");
+    CreatePlaceholderPage(panelSettingsPage, "Settings");
+    
+    // Initially hide all pages except Home
+    panelDictionaryPage.Visible = false;
+    panelSnippetsPage.Visible = false;
+    panelStylePage.Visible = false;
+    panelSettingsPage.Visible = false;
+    panelHomePage.Visible = true;
+    
+    // Set Home as default active page
+    activePagePanel = panelHomePage;
+    activeNavItem = lblNavHome;
+    SetActiveNavItem(lblNavHome);
+  }
+
+  private void CreatePlaceholderPage(Panel panel, string title)
+  {
+    panel.BackColor = Color.White;
+    panel.Dock = DockStyle.Fill;
+    panel.Padding = new Padding(40, 60, 40, 40);
+    
+    Label lblTitle = new Label();
+    lblTitle.Text = title;
+    lblTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
+    lblTitle.ForeColor = Color.FromArgb(45, 45, 48);
+    lblTitle.Location = new Point(40, 60);
+    lblTitle.AutoSize = true;
+    lblTitle.Name = $"lbl{title}Title";
+    
+    Label lblPlaceholder = new Label();
+    lblPlaceholder.Text = $"This is the {title} page.\nContent will be added here.";
+    lblPlaceholder.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblPlaceholder.ForeColor = Color.FromArgb(100, 100, 100);
+    lblPlaceholder.Location = new Point(40, 120);
+    lblPlaceholder.AutoSize = true;
+    lblPlaceholder.Name = $"lbl{title}Placeholder";
+    
+    panel.Controls.Add(lblTitle);
+    panel.Controls.Add(lblPlaceholder);
+  }
+
+  private void SwitchPage(Panel targetPage, Label activeNavLabel)
+  {
+    // Hide all page panels
+    panelHomePage.Visible = false;
+    panelDictionaryPage.Visible = false;
+    panelSnippetsPage.Visible = false;
+    panelStylePage.Visible = false;
+    panelSettingsPage.Visible = false;
+    
+    // Show target page
+    targetPage.Visible = true;
+    activePagePanel = targetPage;
+    
+    // Update active navigation item
+    SetActiveNavItem(activeNavLabel);
+  }
+
+  private void SetActiveNavItem(Label navItem)
+  {
+    // Reset all navigation items to inactive state
+    lblNavHome.ForeColor = Color.FromArgb(100, 100, 100);
+    lblNavHome.BackColor = Color.Transparent;
+    lblNavDictionary.ForeColor = Color.FromArgb(100, 100, 100);
+    lblNavDictionary.BackColor = Color.Transparent;
+    lblNavSnippets.ForeColor = Color.FromArgb(100, 100, 100);
+    lblNavSnippets.BackColor = Color.Transparent;
+    lblNavStyle.ForeColor = Color.FromArgb(100, 100, 100);
+    lblNavStyle.BackColor = Color.Transparent;
+    lblNavSettings.ForeColor = Color.FromArgb(100, 100, 100);
+    lblNavSettings.BackColor = Color.Transparent;
+    
+    // Set active navigation item styling
+    navItem.ForeColor = Color.Black;
+    navItem.BackColor = Color.FromArgb(245, 245, 245);
+    activeNavItem = navItem;
+  }
+
+  private void navItem_Click(object? sender, EventArgs e)
+  {
+    if (sender is Label label)
+    {
+      if (label == lblNavHome)
+      {
+        SwitchPage(panelHomePage, lblNavHome);
+      }
+      else if (label == lblNavDictionary)
+      {
+        SwitchPage(panelDictionaryPage, lblNavDictionary);
+      }
+      else if (label == lblNavSnippets)
+      {
+        SwitchPage(panelSnippetsPage, lblNavSnippets);
+      }
+      else if (label == lblNavStyle)
+      {
+        SwitchPage(panelStylePage, lblNavStyle);
+      }
+      else if (label == lblNavSettings)
+      {
+        SwitchPage(panelSettingsPage, lblNavSettings);
+      }
+    }
   }
 
   protected override void OnFormClosing(FormClosingEventArgs e)
