@@ -2024,7 +2024,6 @@ public partial class DashboardForm : Form
       "Formal.",
       "Caps + Punctuation",
       "Hey, are you free for lunch tomorrow? Let's do 12 if that works for you.",
-      Color.FromArgb(200, 180, 220), // Light purple
       "formal",
       new Point(startX, cardsTop),
       cardWidth,
@@ -2036,7 +2035,6 @@ public partial class DashboardForm : Form
       "Casual",
       "Caps + Less punctuation",
       "Hey are you free for lunch tomorrow? Let's do 12 if that works for you",
-      Color.FromArgb(255, 200, 220), // Light pink
       "casual",
       new Point(startX + cardWidth + cardSpacing, cardsTop),
       cardWidth,
@@ -2048,7 +2046,6 @@ public partial class DashboardForm : Form
       "very casual",
       "No Caps + Less punctuation",
       "hey are you free for lunch tomorrow? let's do 12 if that works for you",
-      Color.FromArgb(128, 0, 128), // Dark purple
       "very_casual",
       new Point(startX + (cardWidth + cardSpacing) * 2, cardsTop),
       cardWidth,
@@ -2064,7 +2061,7 @@ public partial class DashboardForm : Form
     UpdateCardSelection();
   }
 
-  private ClippingPanel CreateStyleCard(string title, string subtitle, string exampleText, Color avatarColor, string styleValue, Point location, int width, int height)
+  private ClippingPanel CreateStyleCard(string title, string subtitle, string exampleText, string styleValue, Point location, int width, int height)
   {
     // Create card panel
     ClippingPanel card = new ClippingPanel();
@@ -2074,9 +2071,6 @@ public partial class DashboardForm : Form
     card.Name = $"panel{styleValue}Card";
     card.Cursor = Cursors.Hand;
     card.Tag = styleValue;
-    
-    // Apply rounded corners
-    ApplyRoundedCorners(card, 10);
     
     // Add border paint handler
     card.Paint += StyleCard_Paint;
@@ -2098,6 +2092,9 @@ public partial class DashboardForm : Form
     lblTitle.Location = new Point(padding, padding);
     lblTitle.AutoSize = true;
     lblTitle.Name = $"lbl{styleValue}Title";
+    lblTitle.Cursor = Cursors.Hand;
+    lblTitle.Tag = styleValue; // Store style value for easy lookup
+    lblTitle.Click += StyleCard_Click;
 
     // Subtitle label
     Label lblSubtitle = new Label();
@@ -2108,10 +2105,16 @@ public partial class DashboardForm : Form
     lblSubtitle.Location = new Point(padding, padding + 35);
     lblSubtitle.AutoSize = true;
     lblSubtitle.Name = $"lbl{styleValue}Subtitle";
+    lblSubtitle.Cursor = Cursors.Hand;
+    lblSubtitle.Tag = styleValue; // Store style value for easy lookup
+    lblSubtitle.Click += StyleCard_Click;
 
     // Message bubble with example text
-    Panel messageBubble = CreateMessageBubble(exampleText, avatarColor, padding, padding + 70, width - (padding * 2), height - padding - (padding + 70) - 20);
+    Panel messageBubble = CreateMessageBubble(exampleText, padding, padding + 70, width - (padding * 2), height - padding - (padding + 70), styleValue);
     messageBubble.Name = $"panel{styleValue}MessageBubble";
+    messageBubble.Cursor = Cursors.Hand;
+    messageBubble.Tag = styleValue;
+    messageBubble.Click += StyleCard_Click;
 
     // Add controls to card
     card.Controls.Add(lblTitle);
@@ -2121,17 +2124,14 @@ public partial class DashboardForm : Form
     return card;
   }
 
-  private Panel CreateMessageBubble(string text, Color avatarColor, int x, int y, int width, int height)
+  private Panel CreateMessageBubble(string text, int x, int y, int width, int height, string styleValue)
   {
     // Create message bubble panel
     Panel bubble = new Panel();
     bubble.BackColor = Color.FromArgb(245, 245, 245);
     bubble.Location = new Point(x, y);
     bubble.Size = new Size(width, height);
-    bubble.Padding = new Padding(12, 12, 12, 40); // Extra bottom padding for avatar
-    
-    // Apply rounded corners
-    ApplyRoundedCorners(bubble, 8);
+    bubble.Padding = new Padding(12, 12, 12, 12);
 
     // Example text label
     Label lblText = new Label();
@@ -2141,79 +2141,105 @@ public partial class DashboardForm : Form
     lblText.BackColor = Color.FromArgb(245, 245, 245);
     lblText.Location = new Point(12, 12);
     lblText.AutoSize = false;
-    lblText.Size = new Size(width - 24 - 30, height - 24 - 30); // Account for padding and avatar space
+    lblText.Size = new Size(width - 24, height - 24); // Account for padding only
     lblText.TextAlign = ContentAlignment.TopLeft;
     lblText.UseCompatibleTextRendering = false;
-
-    // Avatar circle
-    Panel avatar = CreateAvatarCircle("J", avatarColor, width - 30, height - 30, 26);
+    lblText.Cursor = Cursors.Hand;
+    lblText.Tag = styleValue; // Store style value for easy lookup
+    lblText.Click += StyleCard_Click; // Add click handler to text label too
 
     // Add controls to bubble
     bubble.Controls.Add(lblText);
-    bubble.Controls.Add(avatar);
 
     return bubble;
   }
 
-  private Panel CreateAvatarCircle(string letter, Color backgroundColor, int x, int y, int diameter)
-  {
-    Panel avatar = new Panel();
-    avatar.BackColor = backgroundColor;
-    avatar.Location = new Point(x, y);
-    avatar.Size = new Size(diameter, diameter);
-    avatar.Name = $"avatar{letter}";
-
-    // Create circular region
-    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-    path.AddEllipse(0, 0, diameter, diameter);
-    avatar.Region = new System.Drawing.Region(path);
-
-    // Letter label
-    Label lblLetter = new Label();
-    lblLetter.Text = letter;
-    lblLetter.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
-    lblLetter.ForeColor = Color.White;
-    lblLetter.BackColor = backgroundColor;
-    lblLetter.AutoSize = false;
-    lblLetter.Size = new Size(diameter, diameter);
-    lblLetter.TextAlign = ContentAlignment.MiddleCenter;
-    lblLetter.UseCompatibleTextRendering = false;
-
-    avatar.Controls.Add(lblLetter);
-
-    return avatar;
-  }
 
   private void StyleCard_Paint(object? sender, PaintEventArgs e)
   {
-    if (sender is Panel panel && panel.Tag is string styleValue)
+    if (sender is ClippingPanel panel && panel.Tag is string styleValue)
     {
       Color borderColor = (selectedStylePreference == styleValue)
-        ? Color.FromArgb(128, 0, 128) // Purple for selected
+        ? Color.Black // Black for selected
         : Color.FromArgb(200, 200, 200); // Light gray for unselected
 
-      DrawRoundedBorder(panel, e.Graphics, 10, borderColor);
+      // Draw square border (no rounding) with uniform thickness
+      using (Pen pen = new Pen(borderColor, 1))
+      {
+        Rectangle rect = new Rectangle(0, 0, panel.Width - 1, panel.Height - 1);
+        e.Graphics.DrawRectangle(pen, rect);
+      }
     }
   }
 
   private void StyleCard_Click(object? sender, EventArgs e)
   {
-    if (sender is Panel card && card.Tag is string styleValue)
+    string? styleValue = null;
+    
+    // Get style value from sender or find parent card
+    if (sender is ClippingPanel card && card.Tag is string cardValue)
+    {
+      styleValue = cardValue;
+    }
+    else if (sender is Panel panel && panel.Tag is string panelValue)
+    {
+      styleValue = panelValue;
+    }
+    else if (sender is Label label && label.Tag is string labelValue)
+    {
+      styleValue = labelValue;
+    }
+    else if (sender is Control control)
+    {
+      // Find parent card (ClippingPanel) by traversing up the control tree
+      Control? parent = control.Parent;
+      while (parent != null)
+      {
+        if (parent is ClippingPanel parentCard && parentCard.Tag is string parentValue)
+        {
+          styleValue = parentValue;
+          break;
+        }
+        // Also check if parent is a Panel with Tag
+        if (parent is Panel parentPanel && parentPanel.Tag is string panelTagValue)
+        {
+          styleValue = panelTagValue;
+          break;
+        }
+        parent = parent.Parent;
+      }
+    }
+    
+    if (styleValue != null)
     {
       selectedStylePreference = styleValue;
       
       // Save to database
       try
       {
-        databaseService?.SaveUserStylePreference(username, styleValue);
+        if (databaseService != null)
+        {
+          databaseService.SaveUserStylePreference(username, styleValue);
+          System.Diagnostics.Debug.WriteLine($"Style preference saved: {styleValue} for user {username}");
+        }
+        else
+        {
+          System.Diagnostics.Debug.WriteLine("DatabaseService is null!");
+        }
       }
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine($"Failed to save style preference: {ex.Message}");
+        System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+        MessageBox.Show($"Failed to save style preference: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
 
       // Update visual selection
       UpdateCardSelection();
+    }
+    else
+    {
+      System.Diagnostics.Debug.WriteLine($"StyleCard_Click: Could not determine style value from sender. Sender type: {sender?.GetType().Name}");
     }
   }
 
@@ -2237,11 +2263,22 @@ public partial class DashboardForm : Form
   {
     // Refresh all cards to update border colors
     if (panelFormalCard != null)
+    {
       panelFormalCard.Invalidate();
+      panelFormalCard.Refresh(); // Use Refresh instead of Update for immediate repaint
+    }
     if (panelCasualCard != null)
+    {
       panelCasualCard.Invalidate();
+      panelCasualCard.Refresh();
+    }
     if (panelVeryCasualCard != null)
+    {
       panelVeryCasualCard.Invalidate();
+      panelVeryCasualCard.Refresh();
+    }
+    
+    System.Diagnostics.Debug.WriteLine($"UpdateCardSelection called. Selected: {selectedStylePreference}");
   }
 
   private void UpdateCardPositions()
