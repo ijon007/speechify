@@ -65,4 +65,14 @@ public static class WindowsApiHelper
   public const int WM_NCLBUTTONDOWN = 0xA1;
   public const int HT_CAPTION = 0x2;
   public const int WM_NCACTIVATE = 0x0086;
+
+  // Window region for rounded corners
+  [DllImport("gdi32.dll")]
+  public static extern IntPtr CreateRoundRectRgn(int x1, int y1, int x2, int y2, int cx, int cy);
+
+  [DllImport("user32.dll")]
+  public static extern int SetWindowRgn(IntPtr hWnd, IntPtr hRgn, bool bRedraw);
+
+  [DllImport("gdi32.dll")]
+  public static extern bool DeleteObject(IntPtr hObject);
 }

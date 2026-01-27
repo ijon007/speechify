@@ -1157,18 +1157,21 @@ public partial class DashboardForm : Form
     if (databaseService == null)
       return;
 
-    // Create backdrop overlay panel
-    Panel backdrop = new Panel();
-    backdrop.Dock = DockStyle.Fill;
-    backdrop.BackColor = Color.FromArgb(128, 0, 0, 0);
-    backdrop.Visible = true;
-    backdrop.BringToFront();
+    // Create backdrop overlay Form (separate window)
+    Form backdrop = new Form();
+    backdrop.FormBorderStyle = FormBorderStyle.None;
+    backdrop.WindowState = FormWindowState.Normal;
+    backdrop.StartPosition = FormStartPosition.Manual;
+    backdrop.Size = this.Size;
+    backdrop.Location = this.Location;
+    backdrop.BackColor = Color.Black;
+    backdrop.Opacity = 0.5;
+    backdrop.ShowInTaskbar = false;
+    backdrop.TopMost = true;
+    backdrop.Enabled = true;
 
     // Create a Form-based dialog styled like TaskDialog
     Form dialog = new Form();
-    
-    // Set backdrop click handler after dialog is created
-    backdrop.Click += (s, e) => dialog.DialogResult = DialogResult.Cancel;
     dialog.Text = "";
     dialog.FormBorderStyle = FormBorderStyle.None;
     dialog.Size = new Size(500, 200);
@@ -1176,9 +1179,12 @@ public partial class DashboardForm : Form
     dialog.BackColor = Color.White;
     dialog.ShowInTaskbar = false;
     dialog.TopMost = true;
+    
+    // Set backdrop click handler to close dialog
+    backdrop.Click += (s, e) => dialog.DialogResult = DialogResult.Cancel;
 
-    // Add backdrop to parent form
-    this.Controls.Add(backdrop);
+    // Show backdrop first, then dialog
+    backdrop.Show();
     backdrop.BringToFront();
     dialog.BringToFront();
 
@@ -1201,6 +1207,7 @@ public partial class DashboardForm : Form
     btnClose.Size = new Size(30, 30);
     btnClose.Location = new Point(460, 10);
     btnClose.Cursor = Cursors.Hand;
+    btnClose.TextAlign = ContentAlignment.MiddleCenter;
     btnClose.Click += (s, e) => dialog.DialogResult = DialogResult.Cancel;
     btnClose.MouseEnter += (s, e) => { btnClose.ForeColor = Color.FromArgb(45, 45, 48); btnClose.BackColor = Color.FromArgb(245, 245, 245); };
     btnClose.MouseLeave += (s, e) => { btnClose.ForeColor = Color.FromArgb(100, 100, 100); btnClose.BackColor = Color.Transparent; };
@@ -1217,7 +1224,7 @@ public partial class DashboardForm : Form
     // Cancel button
     Button btnCancel = new Button();
     btnCancel.Text = "Cancel";
-    btnCancel.Location = new Point(320, 130);
+    btnCancel.Location = new Point(290, 130);
     btnCancel.Size = new Size(80, 28);
     btnCancel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnCancel.FlatStyle = FlatStyle.Flat;
@@ -1226,13 +1233,14 @@ public partial class DashboardForm : Form
     btnCancel.ForeColor = Color.FromArgb(45, 45, 48);
     btnCancel.Cursor = Cursors.Hand;
     btnCancel.DialogResult = DialogResult.Cancel;
+    btnCancel.TextAlign = ContentAlignment.MiddleCenter;
     btnCancel.MouseEnter += (s, e) => btnCancel.BackColor = Color.FromArgb(220, 220, 220);
     btnCancel.MouseLeave += (s, e) => btnCancel.BackColor = Color.FromArgb(235, 235, 235);
 
     // Save button
     Button btnSave = new Button();
     btnSave.Text = isAdding ? "Add" : "Save changes";
-    btnSave.Location = new Point(410, 130);
+    btnSave.Location = new Point(380, 130);
     btnSave.Size = new Size(100, 28);
     btnSave.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnSave.FlatStyle = FlatStyle.Flat;
@@ -1241,6 +1249,7 @@ public partial class DashboardForm : Form
     btnSave.ForeColor = Color.White;
     btnSave.Cursor = Cursors.Hand;
     btnSave.DialogResult = DialogResult.OK;
+    btnSave.TextAlign = ContentAlignment.MiddleCenter;
     btnSave.MouseEnter += (s, e) => btnSave.BackColor = Color.FromArgb(35, 35, 38);
     btnSave.MouseLeave += (s, e) => btnSave.BackColor = Color.FromArgb(45, 45, 48);
 
@@ -1251,21 +1260,13 @@ public partial class DashboardForm : Form
     dialog.Controls.Add(btnCancel);
     dialog.Controls.Add(btnSave);
 
-    // Draw rounded border
+    // Draw square border
     dialog.Paint += (s, e) =>
     {
       using (Pen pen = new Pen(Color.FromArgb(200, 200, 200), 1))
       {
-        System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
         Rectangle rect = new Rectangle(0, 0, dialog.Width - 1, dialog.Height - 1);
-        int radius = 10;
-        path.AddArc(rect.X, rect.Y, radius * 2, radius * 2, 180, 90);
-        path.AddArc(rect.Right - radius * 2, rect.Y, radius * 2, radius * 2, 270, 90);
-        path.AddArc(rect.Right - radius * 2, rect.Bottom - radius * 2, radius * 2, radius * 2, 0, 90);
-        path.AddArc(rect.X, rect.Bottom - radius * 2, radius * 2, radius * 2, 90, 90);
-        path.CloseAllFigures();
-        e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-        e.Graphics.DrawPath(pen, path);
+        e.Graphics.DrawRectangle(pen, rect);
       }
     };
 
@@ -1275,7 +1276,11 @@ public partial class DashboardForm : Form
     txtWord.Focus();
 
     // Close backdrop when dialog closes
-    dialog.FormClosed += (s, e) => backdrop.Dispose();
+    dialog.FormClosed += (s, e) => 
+    {
+      backdrop.Close();
+      backdrop.Dispose();
+    };
 
     if (dialog.ShowDialog(this) == DialogResult.OK)
     {
