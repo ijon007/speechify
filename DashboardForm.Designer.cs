@@ -75,7 +75,7 @@ partial class DashboardForm
     // 
     // picLogo
     // 
-    picLogo.Location = new Point(22, 11);
+    picLogo.Location = new Point(24, 11);
     picLogo.Name = "picLogo";
     picLogo.Size = new Size(20, 20);
     picLogo.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -87,7 +87,7 @@ partial class DashboardForm
     lblLogo.AutoSize = true;
     lblLogo.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblLogo.ForeColor = Color.FromArgb(45, 45, 48);
-    lblLogo.Location = new Point(40, 10);
+    lblLogo.Location = new Point(42, 10);
     lblLogo.Name = "lblLogo";
     lblLogo.Size = new Size(45, 21);
     lblLogo.TabIndex = 1;
