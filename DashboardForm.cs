@@ -1745,12 +1745,12 @@ public partial class DashboardForm : Form
     btnClose.MouseEnter += (s, ev) => { btnClose.ForeColor = Color.FromArgb(45, 45, 48); btnClose.BackColor = Color.FromArgb(245, 245, 245); };
     btnClose.MouseLeave += (s, ev) => { btnClose.ForeColor = Color.FromArgb(100, 100, 100); btnClose.BackColor = Color.Transparent; };
 
-    // Shortcut label
+    // Shortcut label (aligned with text input area inside TextBox)
     Label lblShortcutLabel = new Label();
     lblShortcutLabel.Text = "Shortcut word:";
     lblShortcutLabel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblShortcutLabel.ForeColor = Color.FromArgb(45, 45, 48);
-    lblShortcutLabel.Location = new Point(20, 60);
+    lblShortcutLabel.Location = new Point(17, 60); // Aligned with text input area (20 + 3px border/padding)
     lblShortcutLabel.AutoSize = true;
 
     // Shortcut input
@@ -1763,12 +1763,12 @@ public partial class DashboardForm : Form
     if (isAdding)
       txtShortcut.SelectAll();
 
-    // Replacement label
+    // Replacement label (aligned with text input area inside TextBox)
     Label lblReplacementLabel = new Label();
     lblReplacementLabel.Text = "Replacement text:";
     lblReplacementLabel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblReplacementLabel.ForeColor = Color.FromArgb(45, 45, 48);
-    lblReplacementLabel.Location = new Point(20, 115);
+    lblReplacementLabel.Location = new Point(17, 115); // Aligned with text input area (20 + 3px border/padding)
     lblReplacementLabel.AutoSize = true;
 
     // Replacement input (multiline for longer text)
@@ -1779,7 +1779,7 @@ public partial class DashboardForm : Form
     txtReplacement.BorderStyle = BorderStyle.FixedSingle;
     txtReplacement.Multiline = true;
     txtReplacement.Text = replacement;
-    txtReplacement.ScrollBars = ScrollBars.Vertical;
+    txtReplacement.ScrollBars = ScrollBars.None; // Hide scrollbar
 
     // Cancel button
     Button btnCancel = new Button();
