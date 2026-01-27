@@ -436,26 +436,15 @@ public partial class DashboardForm : Form
     var speeches = databaseService.GetSpeeches(username);
 
     int yOffset = 10;
-    const int spacingBetweenItems = 30; // Consistent spacing between transcription items
+    const int spacingBetweenItems = 15; // Reduced spacing between transcription items
+    const int fixedPanelHeight = 70; // Fixed height for each item (smaller)
     
     foreach (var speech in speeches)
     {
-      // Create a temporary label to measure text height
-      int availableWidth = panelSpeechHistory.ClientSize.Width - 20;
-      Label tempLabel = new Label();
-      tempLabel.Text = speech.text;
-      tempLabel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
-      tempLabel.AutoSize = true;
-      tempLabel.MaximumSize = new Size(availableWidth - 80, 0);
-      
       CreateSpeechRow(speech.id, speech.time, speech.text, yOffset);
       
-      // Calculate panel height: padding (20) + timestamp (20) + text height + button area (40) + padding (20)
-      int panelHeight = 20 + 20 + tempLabel.Height + 40 + 20;
-      // Calculate next position: panel height + spacing between items
-      yOffset += panelHeight + spacingBetweenItems;
-      
-      tempLabel.Dispose();
+      // Calculate next position: fixed panel height + spacing between items
+      yOffset += fixedPanelHeight + spacingBetweenItems;
     }
   }
 
@@ -490,36 +479,77 @@ public partial class DashboardForm : Form
     }
   }
 
+  private string TruncateText(string text, Font font, int maxWidth, int maxHeight)
+  {
+    if (string.IsNullOrEmpty(text))
+      return text;
+
+    // Create a temporary label to measure text accurately
+    using (Label tempLabel = new Label())
+    {
+      tempLabel.Font = font;
+      tempLabel.Text = text;
+      tempLabel.AutoSize = true;
+      tempLabel.MaximumSize = new Size(maxWidth, 0);
+      
+      // If text fits within maxHeight, return as is
+      if (tempLabel.Height <= maxHeight)
+        return text;
+
+      // Text is too long, need to truncate
+      string ellipsis = "...";
+      
+      // Binary search approach: find the maximum length that fits
+      int minLength = 0;
+      int maxLength = text.Length;
+      
+      while (minLength < maxLength)
+      {
+        int midLength = (minLength + maxLength + 1) / 2;
+        string testText = text.Substring(0, midLength) + ellipsis;
+        tempLabel.Text = testText;
+        
+        if (tempLabel.Height <= maxHeight)
+        {
+          minLength = midLength;
+        }
+        else
+        {
+          maxLength = midLength - 1;
+        }
+      }
+      
+      if (minLength == 0)
+        return ellipsis;
+      
+      return text.Substring(0, minLength) + ellipsis;
+    }
+  }
+
   private void CreateSpeechRow(int id, string time, string text, int yOffset)
   {
     // Calculate available width accounting for padding and scrollbar
     int availableWidth = panelSpeechHistory.ClientSize.Width - 20; // 10px padding on each side
     
-    // Create a temporary label to measure text height
-    Label tempLabel = new Label();
-    tempLabel.Text = text;
-    tempLabel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
-    tempLabel.AutoSize = true;
-    // Account for: left padding (10) + button area (50) + right padding (10) + spacing (10)
-    tempLabel.MaximumSize = new Size(availableWidth - 80, 0);
-    
-    // Calculate panel height: padding (20) + timestamp (20) + text height + button area (40) + padding (20)
-    int panelHeight = 20 + 20 + tempLabel.Height + 40 + 20;
-    tempLabel.Dispose();
+    // Fixed panel height for smaller items
+    const int fixedPanelHeight = 70;
 
     // Create container panel for this speech entry
-    Panel entryPanel = new Panel();
+    ClippingPanel entryPanel = new ClippingPanel();
     entryPanel.BackColor = Color.White;
     entryPanel.Location = new Point(10, yOffset);
-    entryPanel.Size = new Size(availableWidth, panelHeight);
+    entryPanel.Size = new Size(availableWidth, fixedPanelHeight);
     entryPanel.Name = $"panelEntry_{id}";
     entryPanel.Paint += EntryPanel_Paint;
+    entryPanel.AutoSize = false;
+    entryPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
 
     // Create timestamp label
     Label lblTime = new Label();
     lblTime.Text = time;
     lblTime.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
     lblTime.ForeColor = Color.FromArgb(100, 100, 100);
+    lblTime.BackColor = Color.White;
     lblTime.Location = new Point(10, 10);
     lblTime.AutoSize = true;
     lblTime.Name = $"lblTime_{id}";
@@ -527,14 +557,30 @@ public partial class DashboardForm : Form
     // Create text label - ensure it doesn't overlap with button
     // Button is at Width - 50, button width is 30, so text max width = Width - 50 - 30 - 10 (spacing) - 10 (left padding)
     int textMaxWidth = entryPanel.Width - 100;
+    // Calculate available height: panel height (70) - timestamp top (10) - timestamp height (~15) - text top margin (5) - bottom padding (10)
+    int textMaxHeight = fixedPanelHeight - 30 - 10; // ~30px for 2 lines max
+    Font textFont = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    
+    // Truncate text if needed
+    string displayText = TruncateText(text, textFont, textMaxWidth, textMaxHeight);
+    
     Label lblText = new Label();
-    lblText.Text = text;
-    lblText.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblText.Text = displayText;
+    lblText.Font = textFont;
     lblText.ForeColor = Color.FromArgb(45, 45, 48);
+    lblText.BackColor = Color.White;
     lblText.Location = new Point(10, 30);
-    lblText.AutoSize = true;
-    lblText.MaximumSize = new Size(textMaxWidth, 0);
+    lblText.AutoSize = false;
+    lblText.Size = new Size(textMaxWidth, textMaxHeight);
     lblText.Name = $"lblText_{id}";
+    lblText.UseCompatibleTextRendering = false;
+    lblText.TextAlign = ContentAlignment.TopLeft;
+    // Ensure text wraps and doesn't overflow
+    lblText.MaximumSize = new Size(textMaxWidth, textMaxHeight);
+    // Clip the label to its bounds
+    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+    path.AddRectangle(new Rectangle(0, 0, textMaxWidth, textMaxHeight));
+    lblText.Region = new System.Drawing.Region(path);
 
     // Create copy button
     Button btnCopy = new Button();
@@ -637,27 +683,17 @@ public partial class DashboardForm : Form
 
     // Calculate position (add at top)
     int yOffset = 10;
-    const int spacingBetweenItems = 35; // Consistent spacing between transcription items
+    const int spacingBetweenItems = 15; // Reduced spacing between transcription items
+    const int fixedPanelHeight = 70; // Fixed height for each item
 
     // Calculate the height of the new item to move existing controls down
-    int availableWidth = panelSpeechHistory.ClientSize.Width - 20;
-    Label tempLabel = new Label();
-    tempLabel.Text = text;
-    tempLabel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
-    tempLabel.AutoSize = true;
-    tempLabel.MaximumSize = new Size(availableWidth - 80, 0);
-    
-    // Calculate panel height: padding (20) + timestamp (20) + text height + button area (40) + padding (20)
-    int panelHeight = 20 + 20 + tempLabel.Height + 40 + 20;
-    int newItemHeight = panelHeight + spacingBetweenItems;
+    int newItemHeight = fixedPanelHeight + spacingBetweenItems;
     
     // Move existing controls down by the height of the new item
     foreach (Control control in panelSpeechHistory.Controls)
     {
       control.Location = new Point(control.Location.X, control.Location.Y + newItemHeight);
     }
-    
-    tempLabel.Dispose();
 
     // Create the new speech row
     CreateSpeechRow(tempId, time, text, yOffset);
