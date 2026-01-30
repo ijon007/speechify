@@ -13,9 +13,18 @@ partial class DashboardForm
   /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
   protected override void Dispose(bool disposing)
   {
-    if (disposing && (components != null))
+    if (disposing)
     {
-      components.Dispose();
+      if (components != null)
+      {
+        components.Dispose();
+      }
+      // Dispose NotifyIcon if it exists
+      if (this.notifyIcon != null)
+      {
+        this.notifyIcon.Visible = false;
+        this.notifyIcon.Dispose();
+      }
     }
     base.Dispose(disposing);
   }

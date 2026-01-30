@@ -68,6 +68,7 @@ public partial class DashboardForm : Form
   private Label? lblApplicationSectionTitle;
   private CheckBox? chkStartMinimized;
   private CheckBox? chkMinimizeToTray;
+  private NotifyIcon? notifyIcon;
   
   
   // Data Management
@@ -116,10 +117,14 @@ public partial class DashboardForm : Form
     }
     
     databaseService = new DatabaseService();
+    InitializeSystemTray();
     InitializePages();
     LoadDashboardData();
     InitializeLoadingUI();
     InitializeSpeechServicesAsync();
+    
+    // Subscribe to resize events to detect minimize
+    this.Resize += DashboardForm_Resize;
   }
 
   private void ApplyRoundedCorners(Panel panel, int radius)
@@ -551,6 +556,89 @@ public partial class DashboardForm : Form
     // Remove focus from button before minimizing
     this.Focus();
     this.WindowState = FormWindowState.Minimized;
+  }
+
+  private void InitializeSystemTray()
+  {
+    // Create NotifyIcon
+    notifyIcon = new NotifyIcon();
+    notifyIcon.Text = "Textify";
+    
+    // Set icon from assets folder
+    string iconPath = Path.Combine(Application.StartupPath, "assets", "cp-black.ico");
+    if (File.Exists(iconPath))
+    {
+      notifyIcon.Icon = new Icon(iconPath);
+    }
+    else
+    {
+      // Use default icon if custom icon not found
+      notifyIcon.Icon = SystemIcons.Application;
+    }
+    
+    // Add context menu with Show option
+    ContextMenuStrip contextMenu = new ContextMenuStrip();
+    ToolStripMenuItem showMenuItem = new ToolStripMenuItem("Show");
+    showMenuItem.Click += (s, e) => ShowFromTray();
+    ToolStripMenuItem exitMenuItem = new ToolStripMenuItem("Exit");
+    exitMenuItem.Click += (s, e) => this.Close();
+    
+    contextMenu.Items.Add(showMenuItem);
+    contextMenu.Items.Add(new ToolStripSeparator());
+    contextMenu.Items.Add(exitMenuItem);
+    notifyIcon.ContextMenuStrip = contextMenu;
+    
+    // Double-click to restore
+    notifyIcon.DoubleClick += (s, e) => ShowFromTray();
+    
+    notifyIcon.Visible = false; // Start hidden, will show when minimized to tray
+  }
+
+  private void DashboardForm_Resize(object? sender, EventArgs e)
+  {
+    if (this.WindowState == FormWindowState.Minimized)
+    {
+      // Check if minimize to tray is enabled
+      bool minimizeToTray = false;
+      if (chkMinimizeToTray != null && chkMinimizeToTray.Checked)
+      {
+        minimizeToTray = true;
+      }
+      else if (databaseService != null)
+      {
+        // Fallback: check database if checkbox not loaded yet
+        try
+        {
+          var (_, minimizeToTrayPref) = databaseService.GetUserApplicationPreferences(username);
+          minimizeToTray = minimizeToTrayPref;
+        }
+        catch
+        {
+          // If we can't read from database, default to false
+        }
+      }
+      
+      if (minimizeToTray && notifyIcon != null)
+      {
+        // Hide form and show tray icon
+        this.Hide();
+        notifyIcon.Visible = true;
+        notifyIcon.ShowBalloonTip(1000, "Textify", "Application minimized to system tray", ToolTipIcon.Info);
+      }
+    }
+  }
+
+  private void ShowFromTray()
+  {
+    if (notifyIcon != null)
+    {
+      notifyIcon.Visible = false;
+    }
+    
+    this.Show();
+    this.WindowState = FormWindowState.Normal;
+    this.Activate();
+    this.BringToFront();
   }
 
   private void btnMinimize_MouseEnter(object? sender, EventArgs e)
