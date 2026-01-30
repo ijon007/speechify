@@ -4,7 +4,7 @@ A Windows Forms application that provides speech-to-text functionality with glob
 
 ## Features
 
-- **Speech Recognition**: Convert speech to text using Vosk offline speech recognition
+- **Speech Recognition**: Convert speech to text using Whisper.net offline speech recognition
 - **Global Hotkey**: Press `Ctrl + Win` to start/stop speech recognition from anywhere
 - **Text Injection**: Automatically injects recognized text into the active window
 - **Speech History**: View and copy your previous speech transcriptions
@@ -17,7 +17,7 @@ A Windows Forms application that provides speech-to-text functionality with glob
 - **.NET 10.0 SDK** or later
 - **SQL Server Express** (or any SQL Server instance)
 - **Microphone** for speech input
-- **Vosk Language Model** (English small model ~50MB)
+- **Whisper Language Model** (GGML base model ~150MB, downloaded automatically on first run)
 
 ## Setup
 
@@ -87,19 +87,22 @@ CREATE UNIQUE INDEX IX_UserSettings_Username ON UserSettings(Username);
 INSERT INTO Users (Username, UserPass) VALUES ('testuser', 'testpass');
 ```
 
-### 3. Download Vosk Language Model
+### 3. Whisper Language Model
 
-1. Download the English small model from [Vosk Models](https://alphacephei.com/vosk/models)
-2. Extract the model folder (e.g., `vosk-model-en-us-0.22`)
-3. Place it in the `models` folder relative to your application:
+The Whisper model will be automatically downloaded on first run (~150MB for base model). The model will be saved to:
    ```
    WinFormTest/
    └── models/
-       └── vosk-model-en-us-0.22/
+       └── ggml-base.bin
    ```
-4. The model will be automatically loaded when the application starts
 
-**Note**: For better accuracy, you can use the large model (~1.8GB), but you'll need to update the model path in `SpeechRecognitionService.cs`.
+**Manual Download** (optional): If you prefer to download manually or use a different model:
+1. Download a GGML model from [Hugging Face](https://huggingface.co/ggerganov/whisper.cpp)
+2. Place the `.bin` file (e.g., `ggml-base.bin`) in the `models` folder
+3. Supported models: `ggml-tiny.bin`, `ggml-base.bin`, `ggml-small.bin`, `ggml-medium.bin`, `ggml-large.bin`
+4. Update the model filename in `SpeechRecognitionService.cs` if using a different model
+
+**Note**: Larger models provide better accuracy but require more processing time and memory.
 
 ### 4. Configure Database Connection
 
@@ -149,7 +152,7 @@ WinFormTest/
 ├── Form1.cs                    # Login form
 ├── DashboardForm.cs            # Main dashboard with speech history
 ├── SpeechOverlayForm.cs        # Visual overlay during speech recognition
-├── SpeechRecognitionService.cs # Handles Vosk speech recognition
+├── SpeechRecognitionService.cs # Handles Whisper.net speech recognition
 ├── TextInjectionService.cs     # Injects text into active windows
 ├── GlobalHotkeyManager.cs      # Manages global hotkey registration
 ├── DatabaseService.cs          # Database operations
@@ -161,17 +164,19 @@ WinFormTest/
 ## Dependencies
 
 - `Microsoft.Data.SqlClient` (v5.2.2) - SQL Server connectivity
-- `Vosk` (v0.3.38) - Offline speech recognition
+- `Whisper.net` (v1.9.0) - Offline speech recognition using OpenAI Whisper
+- `Whisper.net.Runtime` (v1.9.0) - Whisper.net runtime libraries
 - `NAudio` (v2.2.1) - Audio capture for microphone input
 
 ## Troubleshooting
 
 ### Speech Recognition Not Working
 - Ensure your microphone is connected and working
-- Verify the Vosk model is downloaded and placed in the `models` folder
-- Check that the model folder name matches `vosk-model-en-us-0.22` (or update the path in `SpeechRecognitionService.cs`)
+- Verify the Whisper model (`ggml-base.bin`) is downloaded and placed in the `models` folder
+- Check that you have an internet connection for the first run (model auto-download)
 - Grant microphone permissions to the application
 - Ensure NAudio can access your default audio input device
+- For Windows: Ensure Microsoft Visual C++ Redistributable 2022 (x64) is installed (required by Whisper.net.Runtime)
 
 ### Database Connection Errors
 - Verify SQL Server is running

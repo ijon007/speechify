@@ -114,8 +114,22 @@ public partial class SpeechOverlayForm : Form
 
   public void SetRecognizedText(string text)
   {
-    lblMainText.Text = text;
-    SetState(OverlayState.Recognizing);
+    if (lblMainText != null && !string.IsNullOrEmpty(text))
+    {
+      // Ensure form is visible
+      if (!this.Visible)
+      {
+        this.Show();
+      }
+      
+      lblMainText.Text = text;
+      lblMainText.Visible = true;
+      SetState(OverlayState.Recognizing);
+      
+      // Force form to refresh and stay on top
+      this.BringToFront();
+      this.Refresh();
+    }
   }
 
   private void HighlightHotkey()

@@ -1,6 +1,6 @@
-# Vosk model files (too large for git)
-models/
-**/models/
+# Whisper model files (too large for git)
+models/*.bin
+**/models/*.bin
 
 # Build results
 [Dd]ebug/

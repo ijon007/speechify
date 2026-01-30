@@ -11,14 +11,15 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="NAudio" Version="2.2.1" />
-    <PackageReference Include="Vosk" Version="0.3.38" />
+    <PackageReference Include="Whisper.net" Version="1.9.0" />
+    <PackageReference Include="Whisper.net.Runtime" Version="1.9.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="assets\cp-black.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="models\**\*">
+    <None Update="models\*.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -295,7 +295,7 @@ public partial class DashboardForm : Form
       overlayForm.Hide();
 
       // Load model asynchronously
-      UpdateLoadingText("Loading Vosk model...");
+      UpdateLoadingText("Loading Whisper model...");
       await speechService.InitializeAsync();
       
       // Hide loading panel once model is loaded
@@ -430,8 +430,16 @@ public partial class DashboardForm : Form
     {
       speechService.StopListening();
       
-      // Wait for recognition processing
-      await Task.Delay(1000);
+      // Show processing state
+      overlayForm.SetState(SpeechOverlayForm.OverlayState.Recognizing);
+      
+      // Wait for recognition processing - give it up to 5 seconds
+      int waitTime = 0;
+      while (string.IsNullOrEmpty(recognizedText) && waitTime < 5000)
+      {
+        await Task.Delay(200);
+        waitTime += 200;
+      }
       
       // Calculate duration if we have a start time
       int? duration = null;
@@ -440,12 +448,36 @@ public partial class DashboardForm : Form
         duration = (int)(DateTime.Now - recordingStartTime.Value).TotalMilliseconds;
       }
       
-      // Inject recognized text if available
+      // Process recognized text if available
       if (!string.IsNullOrEmpty(recognizedText))
       {
-        textInjectionService.InjectText(recognizedText);
-        SaveSpeechToDatabase(recognizedText, duration);
-        AddSpeechToHistory(recognizedText);
+        // Trim whitespace
+        string finalText = recognizedText.Trim();
+        
+        // Set clipboard explicitly
+        try
+        {
+          Clipboard.SetText(finalText);
+        }
+        catch (Exception clipEx)
+        {
+          System.Diagnostics.Debug.WriteLine($"Failed to set clipboard: {clipEx.Message}");
+        }
+        
+        // Inject text into active input field
+        textInjectionService.InjectText(finalText);
+        
+        // Save to database
+        SaveSpeechToDatabase(finalText, duration);
+        
+        // Add to history
+        AddSpeechToHistory(finalText);
+      }
+      else
+      {
+        // No text recognized - show message briefly
+        overlayForm.SetRecognizedText("No speech detected");
+        await Task.Delay(1000);
       }
 
       overlayForm.Hide();
@@ -454,8 +486,8 @@ public partial class DashboardForm : Form
     }
     catch (Exception ex)
     {
-      MessageBox.Show($"Failed to stop speech recognition: {ex.Message}", "Error",
-        MessageBoxButtons.OK, MessageBoxIcon.Error);
+      System.Diagnostics.Debug.WriteLine($"HotkeyManager_HotkeyReleased error: {ex.Message}\n{ex.StackTrace}");
+      overlayForm.Hide();
     }
   }
 
@@ -487,7 +519,28 @@ public partial class DashboardForm : Form
       recognizedText = recognizedText + " " + text;
     }
     
-    overlayForm.SetRecognizedText(recognizedText);
+    // Ensure UI updates happen on the UI thread
+    if (overlayForm.InvokeRequired)
+    {
+      overlayForm.Invoke(new Action(() =>
+      {
+        // Ensure overlay is visible
+        if (!overlayForm.Visible)
+        {
+          overlayForm.Show();
+        }
+        overlayForm.SetRecognizedText(recognizedText);
+      }));
+    }
+    else
+    {
+      // Ensure overlay is visible
+      if (!overlayForm.Visible)
+      {
+        overlayForm.Show();
+      }
+      overlayForm.SetRecognizedText(recognizedText);
+    }
   }
 
   private void SetupWindowControls()

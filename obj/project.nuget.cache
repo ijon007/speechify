@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "watMl6Rzm5U=",
+  "dgSpecHash": "59WiNhqMngk=",
   "success": true,
   "projectFilePath": "C:\\Users\\user\\Desktop\\desktop-apps\\WinFormTest\\WinFormTest.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "C:\\Users\\user\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.data.sqlclient\\5.2.2\\microsoft.data.sqlclient.5.2.2.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\5.2.0\\microsoft.data.sqlclient.sni.runtime.5.2.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.ai.abstractions\\10.0.0\\microsoft.extensions.ai.abstractions.10.0.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.identity.client\\4.61.3\\microsoft.identity.client.4.61.3.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.identity.client.extensions.msal\\4.61.3\\microsoft.identity.client.extensions.msal.4.61.3.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.identitymodel.abstractions\\6.35.0\\microsoft.identitymodel.abstractions.6.35.0.nupkg.sha512",
@@ -29,7 +30,9 @@
     "C:\\Users\\user\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.35.0\\system.identitymodel.tokens.jwt.6.35.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\system.runtime.caching\\8.0.0\\system.runtime.caching.8.0.0.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\vosk\\0.3.38\\vosk.0.3.38.nupkg.sha512"
+    "C:\\Users\\user\\.nuget\\packages\\whisper.net\\1.9.0\\whisper.net.1.9.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\whisper.net.runtime\\1.9.0\\whisper.net.runtime.1.9.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\whisper.net.runtime.metal\\1.9.0\\whisper.net.runtime.metal.1.9.0.nupkg.sha512"
   ],
   "logs": []
 }

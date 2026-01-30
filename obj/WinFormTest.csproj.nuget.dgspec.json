@@ -52,9 +52,13 @@
               "target": "Package",
               "version": "[2.2.1, )"
             },
-            "Vosk": {
+            "Whisper.net": {
               "target": "Package",
-              "version": "[0.3.38, )"
+              "version": "[1.9.0, )"
+            },
+            "Whisper.net.Runtime": {
+              "target": "Package",
+              "version": "[1.9.0, )"
             }
           },
           "imports": [

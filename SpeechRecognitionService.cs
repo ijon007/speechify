@@ -1,17 +1,25 @@
-using Vosk;
+using Whisper.net;
+using Whisper.net.Ggml;
 using NAudio.Wave;
-using System.Text.Json;
+using NAudio.Wave.SampleProviders;
+using System.Collections.Generic;
 
 namespace WinFormTest;
 
 public class SpeechRecognitionService : IDisposable
 {
-  private Model? voskModel;
-  private VoskRecognizer? recognizer;
+  private WhisperFactory? whisperFactory;
+  private object? processor;
   private WaveInEvent? waveIn;
+  private MemoryStream? audioBuffer;
   private bool isListening = false;
   private readonly object lockObject = new object();
   private int? selectedDeviceNumber = null;
+  private CancellationTokenSource? cancellationTokenSource;
+  private Task? processingTask;
+  private DateTime lastProcessTime = DateTime.MinValue;
+  private const int ProcessIntervalMs = 2000; // Process every 2 seconds
+  private const int BufferSizeBytes = 32000; // ~1 second at 16kHz mono 16-bit
 
   public event EventHandler<string>? SpeechRecognized;
   public event EventHandler<string>? SpeechPartialResult; // For real-time display only
@@ -26,20 +34,17 @@ public class SpeechRecognitionService : IDisposable
 
   public async Task InitializeAsync()
   {
-    await Task.Run(() =>
+    try
     {
-      try
-      {
-        InitializeVoskModel();
-      }
-      catch (Exception ex)
-      {
-        throw new Exception($"Failed to initialize speech recognition: {ex.Message}", ex);
-      }
-    });
+      await InitializeWhisperModel();
+    }
+    catch (Exception ex)
+    {
+      throw new Exception($"Failed to initialize speech recognition: {ex.Message}", ex);
+    }
   }
 
-  public bool IsModelLoaded => voskModel != null && recognizer != null;
+  public bool IsModelLoaded => whisperFactory != null && processor != null;
 
   public static List<(int deviceNumber, string deviceName)> GetAvailableMicrophones()
   {
@@ -52,9 +57,9 @@ public class SpeechRecognitionService : IDisposable
         devices.Add((i, capabilities.ProductName));
       }
     }
-    catch (Exception ex)
+    catch
     {
-      System.Diagnostics.Debug.WriteLine($"Failed to get microphone devices: {ex.Message}");
+      // Ignore errors
     }
     return devices;
   }
@@ -64,33 +69,62 @@ public class SpeechRecognitionService : IDisposable
     selectedDeviceNumber = deviceNumber;
   }
 
-  private void InitializeVoskModel()
+  private async Task InitializeWhisperModel()
   {
-    // Model path: Application.StartupPath/models/vosk-model-en-us-0.22/
-    string modelPath = Path.Combine(Application.StartupPath, "models", "vosk-model-en-us-0.22");
-    
-    if (!Directory.Exists(modelPath))
+    var startupPath = Application.StartupPath ?? AppDomain.CurrentDomain.BaseDirectory ?? Directory.GetCurrentDirectory();
+    string modelPath = Path.Combine(startupPath, "models", "ggml-base.bin");
+    string modelsDirectory = Path.Combine(startupPath, "models");
+
+    // Ensure models directory exists
+    if (!Directory.Exists(modelsDirectory))
     {
-      throw new Exception($"Vosk model not found at: {modelPath}\n" +
-                         "Please download the English small model from https://alphacephei.com/vosk/models\n" +
-                         "Extract it to: " + modelPath);
+      Directory.CreateDirectory(modelsDirectory);
     }
 
-    voskModel = new Model(modelPath);
-    recognizer = new VoskRecognizer(voskModel, 16000.0f);
-    recognizer.SetMaxAlternatives(0);
-    recognizer.SetWords(true);
+    // Download model if it doesn't exist
+    if (!File.Exists(modelPath))
+    {
+      try
+      {
+        using var modelStream = await WhisperGgmlDownloader.Default.GetGgmlModelAsync(GgmlType.Base);
+        using var fileWriter = File.OpenWrite(modelPath);
+        await modelStream.CopyToAsync(fileWriter);
+      }
+      catch (Exception ex)
+      {
+        throw new Exception($"Failed to download Whisper model: {ex.Message}\n" +
+                          "Please ensure you have an internet connection for the first run.\n" +
+                          "Alternatively, download ggml-base.bin from https://huggingface.co/ggerganov/whisper.cpp\n" +
+                          "and place it in: " + modelPath, ex);
+      }
+    }
+
+    if (!File.Exists(modelPath))
+    {
+      throw new Exception($"Whisper model not found at: {modelPath}\n" +
+                        "Please download ggml-base.bin from https://huggingface.co/ggerganov/whisper.cpp\n" +
+                        "and place it in: " + modelPath);
+    }
+
+    whisperFactory = WhisperFactory.FromPath(modelPath);
+    var builtProcessor = whisperFactory.CreateBuilder()
+      .WithLanguage("auto")
+      .Build();
+    processor = builtProcessor;
   }
 
   public void StartListening()
   {
-    if (voskModel == null || recognizer == null || isListening)
+    if (whisperFactory == null || processor == null || isListening)
       return;
 
     try
     {
       lock (lockObject)
       {
+        // Initialize audio buffer
+        audioBuffer = new MemoryStream();
+
         // Initialize NAudio for microphone capture
         waveIn = new WaveInEvent();
         
@@ -104,8 +138,12 @@ public class SpeechRecognitionService : IDisposable
         waveIn.DataAvailable += WaveIn_DataAvailable;
         waveIn.RecordingStopped += WaveIn_RecordingStopped;
 
-        // Reset recognizer for new session
-        recognizer.Reset();
+        // Initialize cancellation token for processing task
+        cancellationTokenSource = new CancellationTokenSource();
+        lastProcessTime = DateTime.Now;
+
+        // Start background processing task
+        processingTask = Task.Run(async () => await ProcessAudioBufferAsync(cancellationTokenSource.Token));
 
         waveIn.StartRecording();
         isListening = true;
@@ -129,11 +167,37 @@ public class SpeechRecognitionService : IDisposable
         waveIn.StopRecording();
         isListening = false;
 
-        // Get final result
-        if (recognizer != null)
+        // Cancel processing task
+        cancellationTokenSource?.Cancel();
+
+        // Process final buffer
+        if (audioBuffer != null && audioBuffer.Length > 0 && processor != null)
         {
-          string finalResult = recognizer.FinalResult();
-          ProcessFinalResult(finalResult);
+          try
+          {
+            var finalBuffer = new MemoryStream();
+            audioBuffer.Position = 0;
+            audioBuffer.CopyTo(finalBuffer);
+            finalBuffer.Position = 0;
+            _ = Task.Run(async () => await ProcessAudioBufferAsync(finalBuffer, true));
+          }
+          catch
+          {
+            // Ignore errors
+          }
+        }
+
+        // Wait for processing task to complete (with timeout)
+        if (processingTask != null)
+        {
+          try
+          {
+            processingTask.Wait(TimeSpan.FromSeconds(2));
+          }
+          catch
+          {
+            // Ignore timeout or cancellation exceptions
+          }
         }
       }
     }
@@ -145,32 +209,20 @@ public class SpeechRecognitionService : IDisposable
 
   private void WaveIn_DataAvailable(object? sender, WaveInEventArgs e)
   {
-    if (recognizer == null || e.BytesRecorded == 0)
+    if (e.BytesRecorded == 0 || audioBuffer == null)
       return;
 
     try
     {
       lock (lockObject)
       {
-        // Process audio chunk through Vosk
-        if (recognizer.AcceptWaveform(e.Buffer, e.BytesRecorded))
-        {
-          // Finalized result (sentence completed)
-          string result = recognizer.Result();
-          ProcessFinalResult(result);
-        }
-        else
-        {
-          // Partial result (words as they are spoken)
-          string partialResult = recognizer.PartialResult();
-          ProcessPartialResult(partialResult);
-        }
+        // Write audio chunk to buffer
+        audioBuffer.Write(e.Buffer, 0, e.BytesRecorded);
       }
     }
-    catch (Exception ex)
+    catch
     {
-      // Log error but don't stop recognition
-      System.Diagnostics.Debug.WriteLine($"Error processing audio: {ex.Message}");
+      // Ignore errors
     }
   }
 
@@ -179,63 +231,279 @@ public class SpeechRecognitionService : IDisposable
     // Cleanup handled in StopListening
   }
 
-  private void ProcessPartialResult(string jsonResult)
+  private async Task ProcessAudioBufferAsync(CancellationToken cancellationToken)
   {
-    if (string.IsNullOrWhiteSpace(jsonResult))
-      return;
-
-    try
+    while (!cancellationToken.IsCancellationRequested && isListening)
     {
-      using (JsonDocument doc = JsonDocument.Parse(jsonResult))
+      try
       {
-        if (doc.RootElement.TryGetProperty("partial", out JsonElement partialElement))
+        await Task.Delay(500, cancellationToken); // Check every 500ms
+
+        lock (lockObject)
         {
-          string partialText = partialElement.GetString() ?? string.Empty;
-          if (!string.IsNullOrWhiteSpace(partialText))
+          if (audioBuffer == null || processor == null)
+            continue;
+
+          var elapsed = DateTime.Now - lastProcessTime;
+          
+          // Process if enough time has passed or buffer is large enough
+          if (elapsed.TotalMilliseconds >= ProcessIntervalMs || audioBuffer.Length >= BufferSizeBytes)
           {
-            // Emit partial result for real-time display only (not for accumulation)
-            SpeechPartialResult?.Invoke(this, partialText);
+            if (audioBuffer.Length > 0)
+            {
+              // Create a copy of the buffer for processing
+              var bufferCopy = new MemoryStream();
+              audioBuffer.Position = 0;
+              audioBuffer.CopyTo(bufferCopy);
+              bufferCopy.Position = 0;
+
+              // Reset the main buffer
+              audioBuffer.SetLength(0);
+              audioBuffer.Position = 0;
+
+              // Process the copy asynchronously
+              _ = Task.Run(async () => await ProcessAudioBufferAsync(bufferCopy, false));
+            }
+
+            lastProcessTime = DateTime.Now;
           }
         }
       }
-    }
-    catch
-    {
-      // Ignore JSON parsing errors
+      catch (OperationCanceledException)
+      {
+        break;
+      }
+      catch
+      {
+        // Ignore errors
+      }
     }
   }
 
-  private void ProcessFinalResult(string jsonResult)
+  private async Task ProcessAudioBufferAsync(MemoryStream audioStream, bool isFinal)
   {
-    if (string.IsNullOrWhiteSpace(jsonResult))
+    if (processor == null || audioStream.Length == 0)
+    {
+      audioStream.Dispose();
       return;
+    }
+
+    // Whisper needs at least 1 second of audio (16000 samples/sec * 2 bytes/sample = 32000 bytes)
+    // Require at least 1 second for better accuracy
+    if (audioStream.Length < 32000)
+    {
+      audioStream.Dispose();
+      return;
+    }
 
     try
     {
-      using (JsonDocument doc = JsonDocument.Parse(jsonResult))
+      audioStream.Position = 0;
+
+      // Convert to WAV format (Whisper.net expects WAV format)
+      var wavStream = ConvertToWav(audioStream);
+      audioStream.Dispose(); // Dispose PCM stream after conversion
+
+      // Ensure stream is at the beginning
+      wavStream.Position = 0;
+
+      // Process audio through Whisper.net
+      var segments = new List<string>();
+
+      try
       {
-        if (doc.RootElement.TryGetProperty("text", out JsonElement textElement))
+        // Save to temp file - more reliable than MemoryStream
+        string tempFile = Path.Combine(Path.GetTempPath(), $"whisper_{Guid.NewGuid()}.wav");
+        try
         {
-          string recognizedText = textElement.GetString() ?? string.Empty;
-          if (!string.IsNullOrWhiteSpace(recognizedText))
+          using (var fileStream = File.Create(tempFile))
           {
-            // Emit final result (DashboardForm will handle accumulation)
-            SpeechRecognized?.Invoke(this, recognizedText);
+            wavStream.Position = 0;
+            wavStream.CopyTo(fileStream);
+            fileStream.Flush();
+          }
+          
+          // Process using file stream
+          using (var fileStream = File.OpenRead(tempFile))
+          {
+            // Call ProcessAsync using dynamic
+            dynamic dynamicProcessor = processor;
+            var processAsyncResult = dynamicProcessor.ProcessAsync(fileStream);
+            
+            // Get the async enumerator
+            System.Collections.Generic.IAsyncEnumerable<object>? asyncEnumerableInterface = processAsyncResult as System.Collections.Generic.IAsyncEnumerable<object>;
+            if (asyncEnumerableInterface == null)
+            {
+              // Try to cast dynamically
+              try
+              {
+                if (processAsyncResult != null)
+                {
+                  asyncEnumerableInterface = (System.Collections.Generic.IAsyncEnumerable<object>)processAsyncResult;
+                }
+              }
+              catch
+              {
+                return;
+              }
+            }
+            
+            if (asyncEnumerableInterface == null)
+            {
+              return;
+            }
+            
+            var enumerator = asyncEnumerableInterface.GetAsyncEnumerator();
+            try
+            {
+              while (await enumerator.MoveNextAsync())
+              {
+                var current = enumerator.Current;
+                if (current != null)
+                {
+                  // Use reflection to get Text property
+                  var textProperty = current.GetType().GetProperty("Text");
+                  if (textProperty != null)
+                  {
+                    var text = textProperty.GetValue(current)?.ToString();
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                      segments.Add(text);
+                    }
+                  }
+                  else
+                  {
+                    // Try dynamic access as fallback
+                    try
+                    {
+                      dynamic result = current;
+                      string? text = result.Text?.ToString();
+                      if (!string.IsNullOrWhiteSpace(text))
+                      {
+                        segments.Add(text);
+                      }
+                    }
+                    catch { }
+                  }
+                }
+              }
+            }
+            finally
+            {
+              await enumerator.DisposeAsync();
+            }
+          }
+        }
+        finally
+        {
+          // Clean up temp file
+          try
+          {
+            if (File.Exists(tempFile))
+              File.Delete(tempFile);
+          }
+          catch { }
+        }
+      }
+      catch
+      {
+        // Ignore errors
+      }
+      finally
+      {
+        wavStream.Dispose();
+      }
+
+      if (segments.Count > 0)
+      {
+        string combinedText = string.Join(" ", segments);
+        
+        if (isFinal)
+        {
+          // Emit final result
+          if (!string.IsNullOrWhiteSpace(combinedText))
+          {
+            SpeechRecognized?.Invoke(this, combinedText);
+          }
+          else
+          {
+            SpeechRejected?.Invoke(this, "Recognition rejected");
           }
         }
         else
         {
-          // No text recognized
+          // Emit partial result for real-time display
+          SpeechPartialResult?.Invoke(this, combinedText);
+        }
+      }
+      else
+      {
+        if (isFinal)
+        {
           SpeechRejected?.Invoke(this, "Recognition rejected");
         }
       }
     }
     catch
     {
-      // Ignore JSON parsing errors
-      SpeechRejected?.Invoke(this, "Recognition rejected");
+      if (isFinal)
+      {
+        SpeechRejected?.Invoke(this, "Recognition rejected");
+      }
+    }
+    finally
+    {
+      // Ensure stream is disposed
+      if (audioStream != null && audioStream.CanRead)
+      {
+        audioStream.Dispose();
+      }
     }
   }
+
+  private MemoryStream ConvertToWav(MemoryStream pcmStream)
+  {
+    // Create WAV format manually - Whisper.net expects proper WAV headers
+    var wavStream = new MemoryStream();
+    
+    // WAV header for 16kHz, Mono, 16-bit PCM
+    int sampleRate = 16000;
+    int channels = 1;
+    int bitsPerSample = 16;
+    int dataSize = (int)pcmStream.Length;
+    int fileSize = 36 + dataSize;
+
+    // RIFF header (little-endian)
+    wavStream.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"), 0, 4);
+    wavStream.Write(BitConverter.GetBytes(fileSize), 0, 4);
+    wavStream.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"), 0, 4);
+
+    // fmt chunk
+    wavStream.Write(System.Text.Encoding.ASCII.GetBytes("fmt "), 0, 4);
+    wavStream.Write(BitConverter.GetBytes(16), 0, 4); // fmt chunk size
+    wavStream.Write(BitConverter.GetBytes((short)1), 0, 2); // audio format (PCM)
+    wavStream.Write(BitConverter.GetBytes((short)channels), 0, 2);
+    wavStream.Write(BitConverter.GetBytes(sampleRate), 0, 4);
+    
+    int byteRate = sampleRate * channels * bitsPerSample / 8;
+    wavStream.Write(BitConverter.GetBytes(byteRate), 0, 4);
+    
+    short blockAlign = (short)(channels * bitsPerSample / 8);
+    wavStream.Write(BitConverter.GetBytes(blockAlign), 0, 2);
+    wavStream.Write(BitConverter.GetBytes((short)bitsPerSample), 0, 2);
+
+    // data chunk
+    wavStream.Write(System.Text.Encoding.ASCII.GetBytes("data"), 0, 4);
+    wavStream.Write(BitConverter.GetBytes(dataSize), 0, 4);
+
+    // Copy PCM data
+    pcmStream.Position = 0;
+    pcmStream.CopyTo(wavStream);
+
+    wavStream.Position = 0;
+    return wavStream;
+  }
+
 
   public void Dispose()
   {
@@ -243,9 +511,11 @@ public class SpeechRecognitionService : IDisposable
     
     lock (lockObject)
     {
+      cancellationTokenSource?.Dispose();
       waveIn?.Dispose();
-      recognizer?.Dispose();
-      voskModel?.Dispose();
+      audioBuffer?.Dispose();
+      (processor as IDisposable)?.Dispose();
+      whisperFactory?.Dispose();
     }
   }
 }
