@@ -18,6 +18,15 @@ public partial class SpeechOverlayForm : Form
   public SpeechOverlayForm()
   {
     InitializeComponent();
+    // Enable double buffering for smooth rendering
+    SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer | ControlStyles.ResizeRedraw, true);
+    // Enable double buffering for the panel as well
+    if (panelMain != null)
+    {
+      typeof(Panel).InvokeMember("DoubleBuffered",
+        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+        null, panelMain, new object[] { true });
+    }
     SetupOverlay();
     MakeRounded();
   }
@@ -26,7 +35,8 @@ public partial class SpeechOverlayForm : Form
   {
     // Create pill shape using Region
     System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-    int radius = 10;
+    // For thin pills, use smaller radius (half the height, but max 5)
+    int radius = Math.Min(this.Height / 2, 5);
     path.AddArc(0, 0, radius * 2, radius * 2, 180, 90);
     path.AddArc(this.Width - radius * 2, 0, radius * 2, radius * 2, 270, 90);
     path.AddArc(this.Width - radius * 2, this.Height - radius * 2, radius * 2, radius * 2, 0, 90);
@@ -43,6 +53,7 @@ public partial class SpeechOverlayForm : Form
 
   private void SetupOverlay()
   {
+    ResizeFormForState(OverlayState.Idle);
     UpdateOverlayPosition();
     SetState(OverlayState.Idle);
   }
@@ -97,39 +108,61 @@ public partial class SpeechOverlayForm : Form
         HighlightHotkey();
         lblDots.Text = "";
         StopDotAnimation();
+        ResizeFormForState(state);
         panelMain.Invalidate();
         break;
 
       case OverlayState.Listening:
+        ResizeFormForState(state);
         StartDotAnimation();
         panelMain.Invalidate();
         break;
 
       case OverlayState.Recognizing:
         StopDotAnimation();
+        ResizeFormForState(state);
+        // Hide text label - text is not shown in the bubble
+        if (lblMainText != null)
+        {
+          lblMainText.Visible = false;
+        }
         panelMain.Invalidate();
         break;
     }
   }
 
+  private void ResizeFormForState(OverlayState state)
+  {
+    int width = 60;
+    int height;
+    
+    if (state == OverlayState.Idle)
+    {
+      height = 10; // Very thin pill for idle state
+    }
+    else if (state == OverlayState.Listening)
+    {
+      height = 24; // Slightly taller to accommodate centered animation
+    }
+    else // Recognizing
+    {
+      height = 20; // Small pill height
+    }
+    
+    this.Size = new Size(width, height);
+    MakeRounded(); // Recreate rounded region for new size
+    UpdateOverlayPosition(); // Reposition after resize
+  }
+
   public void SetRecognizedText(string text)
   {
-    if (lblMainText != null && !string.IsNullOrEmpty(text))
+    // Don't show text inside the bubble - keep it as a small pill
+    // Text display is handled elsewhere if needed
+    if (lblMainText != null)
     {
-      // Ensure form is visible
-      if (!this.Visible)
-      {
-        this.Show();
-      }
-      
-      lblMainText.Text = text;
-      lblMainText.Visible = true;
-      SetState(OverlayState.Recognizing);
-      
-      // Force form to refresh and stay on top
-      this.BringToFront();
-      this.Refresh();
+      lblMainText.Visible = false;
     }
+    SetState(OverlayState.Recognizing);
   }
 
   private void HighlightHotkey()
@@ -194,41 +227,75 @@ public partial class SpeechOverlayForm : Form
     Graphics g = e.Graphics;
     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
     
-    // Draw white border
-    using (Pen borderPen = new Pen(Color.White, 1))
+    // Thin border around entire pill - white outer, black inner
+    int r = Math.Min(panelMain.Height / 2, 5);
+    float borderWidth = 1f; // Thin border
+    
+    // White border (outer) - covers entire area including all edges
+    using (var outer = new System.Drawing.Drawing2D.GraphicsPath())
     {
-      int radius = 10;
-      g.DrawArc(borderPen, 0, 0, radius * 2, radius * 2, 180, 90);
-      g.DrawArc(borderPen, panelMain.Width - radius * 2, 0, radius * 2, radius * 2, 270, 90);
-      g.DrawArc(borderPen, panelMain.Width - radius * 2, panelMain.Height - radius * 2, radius * 2, radius * 2, 0, 90);
-      g.DrawArc(borderPen, 0, panelMain.Height - radius * 2, radius * 2, radius * 2, 90, 90);
-      g.DrawLine(borderPen, radius, 0, panelMain.Width - radius, 0);
-      g.DrawLine(borderPen, radius, panelMain.Height, panelMain.Width - radius, panelMain.Height);
-      g.DrawLine(borderPen, 0, radius, 0, panelMain.Height - radius);
-      g.DrawLine(borderPen, panelMain.Width, radius, panelMain.Width, panelMain.Height - radius);
+      // Top-left corner
+      outer.AddArc(0, 0, r * 2, r * 2, 180, 90);
+      // Top edge
+      outer.AddLine(r, 0, panelMain.Width - r, 0);
+      // Top-right corner
+      outer.AddArc(panelMain.Width - r * 2, 0, r * 2, r * 2, 270, 90);
+      // Right edge
+      outer.AddLine(panelMain.Width, r, panelMain.Width, panelMain.Height - r);
+      // Bottom-right corner
+      outer.AddArc(panelMain.Width - r * 2, panelMain.Height - r * 2, r * 2, r * 2, 0, 90);
+      // Bottom edge
+      outer.AddLine(panelMain.Width - r, panelMain.Height, r, panelMain.Height);
+      // Bottom-left corner
+      outer.AddArc(0, panelMain.Height - r * 2, r * 2, r * 2, 90, 90);
+      // Left edge
+      outer.AddLine(0, panelMain.Height - r, 0, r);
+      outer.CloseAllFigures();
+      g.FillPath(new SolidBrush(Color.White), outer);
     }
     
-    // Draw voice waves animation when listening
+    // Black fill (inner) - creates thin border effect, offset by borderWidth on all sides
+    using (var inner = new System.Drawing.Drawing2D.GraphicsPath())
+    {
+      float offset = borderWidth;
+      float innerWidth = panelMain.Width - (offset * 2);
+      float innerHeight = panelMain.Height - (offset * 2);
+      int innerR = Math.Max(0, r - (int)borderWidth);
+      
+      // Top-left corner
+      inner.AddArc(offset, offset, innerR * 2, innerR * 2, 180, 90);
+      // Top edge
+      inner.AddLine(offset + innerR, offset, offset + innerWidth - innerR, offset);
+      // Top-right corner
+      inner.AddArc(offset + innerWidth - innerR * 2, offset, innerR * 2, innerR * 2, 270, 90);
+      // Right edge
+      inner.AddLine(offset + innerWidth, offset + innerR, offset + innerWidth, offset + innerHeight - innerR);
+      // Bottom-right corner
+      inner.AddArc(offset + innerWidth - innerR * 2, offset + innerHeight - innerR * 2, innerR * 2, innerR * 2, 0, 90);
+      // Bottom edge
+      inner.AddLine(offset + innerWidth - innerR, offset + innerHeight, offset + innerR, offset + innerHeight);
+      // Bottom-left corner
+      inner.AddArc(offset, offset + innerHeight - innerR * 2, innerR * 2, innerR * 2, 90, 90);
+      // Left edge
+      inner.AddLine(offset, offset + innerHeight - innerR, offset, offset + innerR);
+      inner.CloseAllFigures();
+      g.FillPath(new SolidBrush(Color.Black), inner);
+    }
+    
+    // Draw waves when listening
     if (currentState == OverlayState.Listening)
     {
-      using (Pen wavePen = new Pen(Color.White, 2))
+      int centerY = panelMain.Height / 2;
+      int centerX = panelMain.Width / 2;
+      int spacing = 6;
+      int startX = centerX - (waveHeights.Length - 1) * spacing / 2;
+      
+      using (var pen = new Pen(Color.White, 2))
       {
-        int centerY = panelMain.Height / 2;
-        int spacing = 8;
-        int numWaves = waveHeights.Length;
-        // Calculate total width needed: (numWaves - 1) * spacing for gaps
-        int totalWaveWidth = (numWaves - 1) * spacing;
-        // Center the waves: (panel width - total wave width) / 2
-        int startX = (panelMain.Width - totalWaveWidth) / 2;
-        
         for (int i = 0; i < waveHeights.Length; i++)
         {
-          int x = startX + (i * spacing);
-          int height = waveHeights[i];
-          int topY = centerY - height / 2;
-          int bottomY = centerY + height / 2;
-          
-          g.DrawLine(wavePen, x, topY, x, bottomY);
+          int h = Math.Min(waveHeights[i], panelMain.Height - 4);
+          g.DrawLine(pen, startX + i * spacing, centerY - h / 2, startX + i * spacing, centerY + h / 2);
         }
       }
     }

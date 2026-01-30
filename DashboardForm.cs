@@ -296,7 +296,9 @@ public partial class DashboardForm : Form
         }
       }
       
-      overlayForm.Hide();
+      // Show idle state (thin pill)
+      overlayForm.SetState(SpeechOverlayForm.OverlayState.Idle);
+      overlayForm.Show();
 
       // Load model asynchronously
       UpdateLoadingText("Loading Whisper model...");
@@ -494,14 +496,15 @@ public partial class DashboardForm : Form
         await Task.Delay(1000);
       }
 
-      overlayForm.Hide();
+      // Return to idle state (thin pill) instead of hiding
+      overlayForm.SetState(SpeechOverlayForm.OverlayState.Idle);
       recognizedText = null;
       recordingStartTime = null;
     }
     catch (Exception ex)
     {
       System.Diagnostics.Debug.WriteLine($"HotkeyManager_HotkeyReleased error: {ex.Message}\n{ex.StackTrace}");
-      overlayForm.Hide();
+      overlayForm.SetState(SpeechOverlayForm.OverlayState.Idle);
     }
   }
 

@@ -39,6 +39,7 @@ partial class SpeechOverlayForm
     // 
     panelMain.BackColor = Color.Black;
     panelMain.BorderStyle = BorderStyle.None;
+    panelMain.ForeColor = Color.White;
     panelMain.Controls.Add(lblDots);
     panelMain.Controls.Add(lblMainText);
     panelMain.Dock = DockStyle.Fill;
