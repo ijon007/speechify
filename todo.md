@@ -1,16 +1,15 @@
 # TODO
 
 ## In Progress
-- **Add snippets and dictionary to model** - inject them in the model in some way for each ones feature. the model should detect if one of the words said is part of those in the db and edit the transcription accordingly before showing it to the user in the input field.
 - 
 
 ## Pending
 
 ### Other
-- **Albanina model** 
 - **Code formatting** 
 
 ## Completed
+- **Add snippets and dictionary to model** - inject them in the model in some way for each ones feature. the model should detect if one of the words said is part of those in the db and edit the transcription accordingly before showing it to the user in the input field.
 - **Speech bubble** (speech overlay) - fix the animation and the diff states (+ add an idle state)
 - **Add ai correction and punctuation**
 - **Add whisper voice model**
