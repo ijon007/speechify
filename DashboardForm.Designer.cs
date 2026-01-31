@@ -94,7 +94,7 @@ partial class DashboardForm
     // lblLogo
     // 
     lblLogo.AutoSize = true;
-    lblLogo.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblLogo.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblLogo.ForeColor = Color.FromArgb(45, 45, 48);
     lblLogo.Location = new Point(42, 10);
     lblLogo.Name = "lblLogo";
@@ -106,12 +106,12 @@ partial class DashboardForm
     // 
     lblNavHome.AutoSize = false;
     lblNavHome.Cursor = Cursors.Hand;
-    lblNavHome.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblNavHome.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavHome.ForeColor = Color.FromArgb(45, 45, 48);
     lblNavHome.Location = new Point(10, 40);
     lblNavHome.Name = "lblNavHome";
     lblNavHome.Padding = new Padding(10, 9, 10, 8);
-    lblNavHome.Size = new Size(180, 35);
+    lblNavHome.Size = new Size(180, 40);
     lblNavHome.TabIndex = 2;
     lblNavHome.Text = "🏠 Home";
     lblNavHome.TextAlign = ContentAlignment.MiddleLeft;
@@ -124,12 +124,12 @@ partial class DashboardForm
     // 
     lblNavDictionary.AutoSize = false;
     lblNavDictionary.Cursor = Cursors.Hand;
-    lblNavDictionary.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblNavDictionary.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavDictionary.ForeColor = Color.FromArgb(100, 100, 100);
     lblNavDictionary.Location = new Point(10, 80);
     lblNavDictionary.Name = "lblNavDictionary";
     lblNavDictionary.Padding = new Padding(10, 9, 10, 8);
-    lblNavDictionary.Size = new Size(180, 35);
+    lblNavDictionary.Size = new Size(180, 40);
     lblNavDictionary.TabIndex = 3;
     lblNavDictionary.Text = "📚 Dictionary";
     lblNavDictionary.TextAlign = ContentAlignment.MiddleLeft;
@@ -141,12 +141,12 @@ partial class DashboardForm
     // 
     lblNavSnippets.AutoSize = false;
     lblNavSnippets.Cursor = Cursors.Hand;
-    lblNavSnippets.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblNavSnippets.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavSnippets.ForeColor = Color.FromArgb(100, 100, 100);
     lblNavSnippets.Location = new Point(10, 120);
     lblNavSnippets.Name = "lblNavSnippets";
     lblNavSnippets.Padding = new Padding(10, 9, 10, 8);
-    lblNavSnippets.Size = new Size(180, 35);
+    lblNavSnippets.Size = new Size(180, 40);
     lblNavSnippets.TabIndex = 4;
     lblNavSnippets.Text = "📝 Snippets";
     lblNavSnippets.TextAlign = ContentAlignment.MiddleLeft;
@@ -158,12 +158,12 @@ partial class DashboardForm
     // 
     lblNavStyle.AutoSize = false;
     lblNavStyle.Cursor = Cursors.Hand;
-    lblNavStyle.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblNavStyle.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavStyle.ForeColor = Color.FromArgb(100, 100, 100);
     lblNavStyle.Location = new Point(10, 160);
     lblNavStyle.Name = "lblNavStyle";
     lblNavStyle.Padding = new Padding(10, 9, 10, 8);
-    lblNavStyle.Size = new Size(180, 35);
+    lblNavStyle.Size = new Size(180, 40);
     lblNavStyle.TabIndex = 5;
     lblNavStyle.Text = "🎨 Style";
     lblNavStyle.TextAlign = ContentAlignment.MiddleLeft;
@@ -175,12 +175,12 @@ partial class DashboardForm
     // 
     lblNavSettings.AutoSize = false;
     lblNavSettings.Cursor = Cursors.Hand;
-    lblNavSettings.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblNavSettings.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavSettings.ForeColor = Color.FromArgb(100, 100, 100);
     lblNavSettings.Location = new Point(10, 200);
     lblNavSettings.Name = "lblNavSettings";
     lblNavSettings.Padding = new Padding(10, 9, 10, 8);
-    lblNavSettings.Size = new Size(180, 35);
+    lblNavSettings.Size = new Size(180, 40);
     lblNavSettings.TabIndex = 6;
     lblNavSettings.Text = "⚙️ Settings";
     lblNavSettings.TextAlign = ContentAlignment.MiddleLeft;
@@ -222,7 +222,7 @@ partial class DashboardForm
     // lblWelcome
     // 
     lblWelcome.AutoSize = true;
-    lblWelcome.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
+    lblWelcome.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point);
     lblWelcome.ForeColor = Color.FromArgb(45, 45, 48);
     lblWelcome.Location = new Point(40, 60);
     lblWelcome.Name = "lblWelcome";
@@ -233,7 +233,7 @@ partial class DashboardForm
     // lblStatWeeks
     // 
     lblStatWeeks.AutoSize = true;
-    lblStatWeeks.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblStatWeeks.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblStatWeeks.ForeColor = Color.FromArgb(100, 100, 100);
     lblStatWeeks.Location = new Point(40, 120);
     lblStatWeeks.Name = "lblStatWeeks";
@@ -244,7 +244,7 @@ partial class DashboardForm
     // lblStatWords
     // 
     lblStatWords.AutoSize = true;
-    lblStatWords.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblStatWords.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblStatWords.ForeColor = Color.FromArgb(100, 100, 100);
     lblStatWords.Location = new Point(130, 120);
     lblStatWords.Name = "lblStatWords";
@@ -255,7 +255,7 @@ partial class DashboardForm
     // lblStatWPM
     // 
     lblStatWPM.AutoSize = true;
-    lblStatWPM.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblStatWPM.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblStatWPM.ForeColor = Color.FromArgb(100, 100, 100);
     lblStatWPM.Location = new Point(250, 120);
     lblStatWPM.Name = "lblStatWPM";
@@ -266,7 +266,7 @@ partial class DashboardForm
     // lblToday
     // 
     lblToday.AutoSize = true;
-    lblToday.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblToday.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblToday.ForeColor = Color.FromArgb(45, 45, 48);
     lblToday.Location = new Point(40, 180);
     lblToday.Name = "lblToday";
@@ -326,7 +326,7 @@ partial class DashboardForm
     btnClose.BackColor = Color.Transparent;
     btnClose.FlatAppearance.BorderSize = 0;
     btnClose.FlatStyle = FlatStyle.Flat;
-    btnClose.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClose.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point);
     btnClose.ForeColor = Color.FromArgb(100, 100, 100);
     btnClose.Location = new Point(1170, 0);
     btnClose.Name = "btnClose";
@@ -344,7 +344,7 @@ partial class DashboardForm
     btnMinimize.BackColor = Color.Transparent;
     btnMinimize.FlatAppearance.BorderSize = 0;
     btnMinimize.FlatStyle = FlatStyle.Flat;
-    btnMinimize.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+    btnMinimize.Font = new Font("Poppins", 14F, FontStyle.Regular, GraphicsUnit.Point);
     btnMinimize.ForeColor = Color.FromArgb(100, 100, 100);
     btnMinimize.Location = new Point(1140, 0);
     btnMinimize.Name = "btnMinimize";

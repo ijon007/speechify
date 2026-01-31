@@ -53,7 +53,7 @@ partial class SpeechOverlayForm
     // lblMainText
     // 
     lblMainText.AutoSize = true;
-    lblMainText.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblMainText.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblMainText.ForeColor = Color.White;
     lblMainText.Location = new Point(20, 20);
     lblMainText.Name = "lblMainText";
@@ -65,7 +65,7 @@ partial class SpeechOverlayForm
     // lblDots
     // 
     lblDots.AutoSize = true;
-    lblDots.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+    lblDots.Font = new Font("Poppins", 14F, FontStyle.Regular, GraphicsUnit.Point);
     lblDots.ForeColor = Color.FromArgb(200, 200, 200);
     lblDots.Location = new Point(20, 50);
     lblDots.Name = "lblDots";

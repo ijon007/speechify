@@ -7,7 +7,6 @@
 
 ### Other
 - **Add snippets and dictionary to model** - inject them in the model in some way for each ones feature. the model should detect if one of the words said is part of those in the db and edit the transcription accordingly before showing it to the user in the input field.
-- **Add poppins font** 
 - **Code formatting** 
 
 ## Completed
@@ -24,6 +23,7 @@
 ---
 
 ## Notes
+- **Add poppins font** 
 - Dictionary, Snippets, Style, and Settings pages currently only have placeholder content created in `CreatePlaceholderPage()` method
 - All pages are Panel controls docked to fill `panelMain` in DashboardForm
 - Navigation between pages is already implemented via sidebar navigation

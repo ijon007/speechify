@@ -239,7 +239,7 @@ public partial class DashboardForm : Form
     // Create loading label
     loadingLabel = new Label();
     loadingLabel.Text = "Loading speech recognition model...\nPlease wait...";
-    loadingLabel.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+    loadingLabel.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point);
     loadingLabel.ForeColor = Color.White;
     loadingLabel.AutoSize = false;
     loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -891,7 +891,7 @@ public partial class DashboardForm : Form
     // Create timestamp label
     Label lblTime = new Label();
     lblTime.Text = time;
-    lblTime.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+    lblTime.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point);
     lblTime.ForeColor = Color.FromArgb(100, 100, 100);
     lblTime.BackColor = Color.White;
     lblTime.Location = new Point(10, 10);
@@ -903,7 +903,7 @@ public partial class DashboardForm : Form
     int textMaxWidth = entryPanel.Width - 100;
     // Calculate available height: panel height (70) - timestamp top (10) - timestamp height (~15) - text top margin (5) - bottom padding (10)
     int textMaxHeight = fixedPanelHeight - 30 - 10; // ~30px for 2 lines max
-    Font textFont = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    Font textFont = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     
     // Truncate text if needed
     string displayText = TruncateText(text, textFont, textMaxWidth, textMaxHeight);
@@ -929,7 +929,7 @@ public partial class DashboardForm : Form
     // Create copy button
     Button btnCopy = new Button();
     btnCopy.Text = "📋";
-    btnCopy.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    btnCopy.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     btnCopy.Size = new Size(30, 30);
     btnCopy.FlatStyle = FlatStyle.Flat;
     btnCopy.FlatAppearance.BorderSize = 0;
@@ -1084,7 +1084,7 @@ public partial class DashboardForm : Form
     
     Label lblTitle = new Label();
     lblTitle.Text = title;
-    lblTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
+    lblTitle.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point);
     lblTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblTitle.Location = new Point(40, 60);
     lblTitle.AutoSize = true;
@@ -1092,7 +1092,7 @@ public partial class DashboardForm : Form
     
     Label lblPlaceholder = new Label();
     lblPlaceholder.Text = $"This is the {title} page.\nContent will be added here.";
-    lblPlaceholder.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblPlaceholder.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblPlaceholder.ForeColor = Color.FromArgb(100, 100, 100);
     lblPlaceholder.Location = new Point(40, 120);
     lblPlaceholder.AutoSize = true;
@@ -1187,7 +1187,7 @@ public partial class DashboardForm : Form
     // Page Title
     lblDictionaryTitle = new Label();
     lblDictionaryTitle.Text = "Dictionary";
-    lblDictionaryTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
+    lblDictionaryTitle.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point);
     lblDictionaryTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblDictionaryTitle.Location = new Point(40, 60);
     lblDictionaryTitle.AutoSize = true;
@@ -1196,7 +1196,7 @@ public partial class DashboardForm : Form
     // Add New Button (top-right)
     btnAddNew = new Button();
     btnAddNew.Text = "Add new";
-    btnAddNew.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnAddNew.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnAddNew.FlatStyle = FlatStyle.Flat;
     btnAddNew.FlatAppearance.BorderSize = 0;
     btnAddNew.BackColor = Color.FromArgb(45, 45, 48);
@@ -1221,7 +1221,7 @@ public partial class DashboardForm : Form
     // Empty State Label
     lblEmptyDictionary = new Label();
     lblEmptyDictionary.Text = "No dictionary entries yet. Click 'Add new' to add your first word!";
-    lblEmptyDictionary.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblEmptyDictionary.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblEmptyDictionary.ForeColor = Color.FromArgb(100, 100, 100);
     lblEmptyDictionary.AutoSize = false;
     lblEmptyDictionary.TextAlign = ContentAlignment.MiddleCenter;
@@ -1335,7 +1335,7 @@ public partial class DashboardForm : Form
     // Create word label
     Label lblWord = new Label();
     lblWord.Text = word;
-    lblWord.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblWord.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblWord.ForeColor = Color.FromArgb(45, 45, 48);
     lblWord.BackColor = Color.White;
     lblWord.Location = new Point(10, 15);
@@ -1347,7 +1347,7 @@ public partial class DashboardForm : Form
     // Create edit button
     Button btnEdit = new Button();
     btnEdit.Text = "✏️";
-    btnEdit.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    btnEdit.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     btnEdit.Size = new Size(30, 30);
     btnEdit.FlatStyle = FlatStyle.Flat;
     btnEdit.FlatAppearance.BorderSize = 0;
@@ -1364,7 +1364,7 @@ public partial class DashboardForm : Form
     // Create delete button
     Button btnDelete = new Button();
     btnDelete.Text = "🗑️";
-    btnDelete.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    btnDelete.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     btnDelete.Size = new Size(30, 30);
     btnDelete.FlatStyle = FlatStyle.Flat;
     btnDelete.FlatAppearance.BorderSize = 0;
@@ -1481,7 +1481,7 @@ public partial class DashboardForm : Form
     // Title label
     Label lblTitle = new Label();
     lblTitle.Text = isAdding ? "Add new word" : "Edit word";
-    lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point);
+    lblTitle.Font = new Font("Poppins", 16F, FontStyle.Bold, GraphicsUnit.Point);
     lblTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblTitle.Location = new Point(20, 20);
     lblTitle.AutoSize = true;
@@ -1489,7 +1489,7 @@ public partial class DashboardForm : Form
     // Close button
     Button btnClose = new Button();
     btnClose.Text = "×";
-    btnClose.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClose.Font = new Font("Poppins", 18F, FontStyle.Regular, GraphicsUnit.Point);
     btnClose.FlatStyle = FlatStyle.Flat;
     btnClose.FlatAppearance.BorderSize = 0;
     btnClose.BackColor = Color.Transparent;
@@ -1506,7 +1506,7 @@ public partial class DashboardForm : Form
     TextBox txtWord = new TextBox();
     txtWord.Location = new Point(20, 70);
     txtWord.Size = new Size(460, 25);
-    txtWord.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    txtWord.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     txtWord.BorderStyle = BorderStyle.FixedSingle;
     txtWord.Text = word;
     txtWord.SelectAll();
@@ -1516,7 +1516,7 @@ public partial class DashboardForm : Form
     btnCancel.Text = "Cancel";
     btnCancel.Location = new Point(290, 130);
     btnCancel.Size = new Size(80, 28);
-    btnCancel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnCancel.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnCancel.FlatStyle = FlatStyle.Flat;
     btnCancel.FlatAppearance.BorderSize = 0;
     btnCancel.BackColor = Color.FromArgb(235, 235, 235);
@@ -1532,7 +1532,7 @@ public partial class DashboardForm : Form
     btnSave.Text = isAdding ? "Add" : "Save changes";
     btnSave.Location = new Point(380, 130);
     btnSave.Size = new Size(100, 28);
-    btnSave.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnSave.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnSave.FlatStyle = FlatStyle.Flat;
     btnSave.FlatAppearance.BorderSize = 0;
     btnSave.BackColor = Color.FromArgb(45, 45, 48);
@@ -1697,7 +1697,7 @@ public partial class DashboardForm : Form
     // Page Title
     lblSnippetsTitle = new Label();
     lblSnippetsTitle.Text = "Snippets";
-    lblSnippetsTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
+    lblSnippetsTitle.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point);
     lblSnippetsTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblSnippetsTitle.Location = new Point(40, 60);
     lblSnippetsTitle.AutoSize = true;
@@ -1706,7 +1706,7 @@ public partial class DashboardForm : Form
     // Add New Button (top-right)
     btnAddNewSnippet = new Button();
     btnAddNewSnippet.Text = "Add new";
-    btnAddNewSnippet.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnAddNewSnippet.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnAddNewSnippet.FlatStyle = FlatStyle.Flat;
     btnAddNewSnippet.FlatAppearance.BorderSize = 0;
     btnAddNewSnippet.BackColor = Color.FromArgb(45, 45, 48);
@@ -1731,7 +1731,7 @@ public partial class DashboardForm : Form
     // Empty State Label
     lblEmptySnippets = new Label();
     lblEmptySnippets.Text = "No snippets yet. Click 'Add new' to add your first shortcut!";
-    lblEmptySnippets.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblEmptySnippets.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblEmptySnippets.ForeColor = Color.FromArgb(100, 100, 100);
     lblEmptySnippets.AutoSize = false;
     lblEmptySnippets.TextAlign = ContentAlignment.MiddleCenter;
@@ -1845,7 +1845,7 @@ public partial class DashboardForm : Form
     // Create shortcut label
     Label lblShortcut = new Label();
     lblShortcut.Text = shortcut;
-    lblShortcut.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblShortcut.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblShortcut.ForeColor = Color.FromArgb(45, 45, 48);
     lblShortcut.BackColor = Color.White;
     lblShortcut.Location = new Point(10, 10);
@@ -1858,7 +1858,7 @@ public partial class DashboardForm : Form
     string displayReplacement = replacement.Length > 60 ? replacement.Substring(0, 57) + "..." : replacement;
     Label lblReplacement = new Label();
     lblReplacement.Text = displayReplacement;
-    lblReplacement.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+    lblReplacement.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point);
     lblReplacement.ForeColor = Color.FromArgb(100, 100, 100);
     lblReplacement.BackColor = Color.White;
     lblReplacement.Location = new Point(10, 32);
@@ -1870,7 +1870,7 @@ public partial class DashboardForm : Form
     // Create edit button
     Button btnEdit = new Button();
     btnEdit.Text = "✏️";
-    btnEdit.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    btnEdit.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     btnEdit.Size = new Size(30, 30);
     btnEdit.FlatStyle = FlatStyle.Flat;
     btnEdit.FlatAppearance.BorderSize = 0;
@@ -1887,7 +1887,7 @@ public partial class DashboardForm : Form
     // Create delete button
     Button btnDelete = new Button();
     btnDelete.Text = "🗑️";
-    btnDelete.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    btnDelete.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     btnDelete.Size = new Size(30, 30);
     btnDelete.FlatStyle = FlatStyle.Flat;
     btnDelete.FlatAppearance.BorderSize = 0;
@@ -2005,7 +2005,7 @@ public partial class DashboardForm : Form
     // Title label
     Label lblTitle = new Label();
     lblTitle.Text = isAdding ? "Add new snippet" : "Edit snippet";
-    lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point);
+    lblTitle.Font = new Font("Poppins", 16F, FontStyle.Bold, GraphicsUnit.Point);
     lblTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblTitle.Location = new Point(20, 20);
     lblTitle.AutoSize = true;
@@ -2013,7 +2013,7 @@ public partial class DashboardForm : Form
     // Close button
     Button btnClose = new Button();
     btnClose.Text = "×";
-    btnClose.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClose.Font = new Font("Poppins", 18F, FontStyle.Regular, GraphicsUnit.Point);
     btnClose.FlatStyle = FlatStyle.Flat;
     btnClose.FlatAppearance.BorderSize = 0;
     btnClose.BackColor = Color.Transparent;
@@ -2029,7 +2029,7 @@ public partial class DashboardForm : Form
     // Shortcut label (aligned with text input area inside TextBox)
     Label lblShortcutLabel = new Label();
     lblShortcutLabel.Text = "Shortcut word:";
-    lblShortcutLabel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblShortcutLabel.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblShortcutLabel.ForeColor = Color.FromArgb(45, 45, 48);
     lblShortcutLabel.Location = new Point(17, 60); // Aligned with text input area (20 + 3px border/padding)
     lblShortcutLabel.AutoSize = true;
@@ -2038,7 +2038,7 @@ public partial class DashboardForm : Form
     TextBox txtShortcut = new TextBox();
     txtShortcut.Location = new Point(20, 80);
     txtShortcut.Size = new Size(460, 25);
-    txtShortcut.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    txtShortcut.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     txtShortcut.BorderStyle = BorderStyle.FixedSingle;
     txtShortcut.Text = shortcut;
     if (isAdding)
@@ -2047,7 +2047,7 @@ public partial class DashboardForm : Form
     // Replacement label (aligned with text input area inside TextBox)
     Label lblReplacementLabel = new Label();
     lblReplacementLabel.Text = "Replacement text:";
-    lblReplacementLabel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblReplacementLabel.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblReplacementLabel.ForeColor = Color.FromArgb(45, 45, 48);
     lblReplacementLabel.Location = new Point(17, 115); // Aligned with text input area (20 + 3px border/padding)
     lblReplacementLabel.AutoSize = true;
@@ -2056,7 +2056,7 @@ public partial class DashboardForm : Form
     TextBox txtReplacement = new TextBox();
     txtReplacement.Location = new Point(20, 135);
     txtReplacement.Size = new Size(460, 60);
-    txtReplacement.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    txtReplacement.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     txtReplacement.BorderStyle = BorderStyle.FixedSingle;
     txtReplacement.Multiline = true;
     txtReplacement.Text = replacement;
@@ -2067,7 +2067,7 @@ public partial class DashboardForm : Form
     btnCancel.Text = "Cancel";
     btnCancel.Location = new Point(290, 210);
     btnCancel.Size = new Size(80, 28);
-    btnCancel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnCancel.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnCancel.FlatStyle = FlatStyle.Flat;
     btnCancel.FlatAppearance.BorderSize = 0;
     btnCancel.BackColor = Color.FromArgb(235, 235, 235);
@@ -2083,7 +2083,7 @@ public partial class DashboardForm : Form
     btnSave.Text = isAdding ? "Add" : "Save changes";
     btnSave.Location = new Point(380, 210);
     btnSave.Size = new Size(100, 28);
-    btnSave.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnSave.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnSave.FlatStyle = FlatStyle.Flat;
     btnSave.FlatAppearance.BorderSize = 0;
     btnSave.BackColor = Color.FromArgb(45, 45, 48);
@@ -2251,7 +2251,7 @@ public partial class DashboardForm : Form
     // Page Title
     lblStyleTitle = new Label();
     lblStyleTitle.Text = "Style";
-    lblStyleTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
+    lblStyleTitle.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point);
     lblStyleTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblStyleTitle.Location = new Point(40, 60);
     lblStyleTitle.AutoSize = true;
@@ -2358,7 +2358,7 @@ public partial class DashboardForm : Form
     // Title label
     Label lblTitle = new Label();
     lblTitle.Text = title;
-    lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point);
+    lblTitle.Font = new Font("Poppins", 18F, FontStyle.Bold, GraphicsUnit.Point);
     lblTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblTitle.BackColor = Color.White;
     lblTitle.Location = new Point(padding, padding);
@@ -2371,7 +2371,7 @@ public partial class DashboardForm : Form
     // Subtitle label
     Label lblSubtitle = new Label();
     lblSubtitle.Text = subtitle;
-    lblSubtitle.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblSubtitle.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblSubtitle.ForeColor = Color.FromArgb(100, 100, 100);
     lblSubtitle.BackColor = Color.White;
     lblSubtitle.Location = new Point(padding, padding + 35);
@@ -2408,7 +2408,7 @@ public partial class DashboardForm : Form
     // Example text label
     Label lblText = new Label();
     lblText.Text = text;
-    lblText.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblText.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblText.ForeColor = Color.FromArgb(45, 45, 48);
     lblText.BackColor = Color.FromArgb(245, 245, 245);
     lblText.Location = new Point(12, 12);
@@ -2603,7 +2603,7 @@ public partial class DashboardForm : Form
     // Page Title
     lblSettingsTitle = new Label();
     lblSettingsTitle.Text = "Settings";
-    lblSettingsTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
+    lblSettingsTitle.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point);
     lblSettingsTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblSettingsTitle.Location = new Point(40, currentY);
     lblSettingsTitle.AutoSize = true;
@@ -2614,7 +2614,7 @@ public partial class DashboardForm : Form
     // ===== Push-to-Talk Shortcut Section =====
     lblHotkeySectionTitle = new Label();
     lblHotkeySectionTitle.Text = "Push-to-Talk Shortcut";
-    lblHotkeySectionTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblHotkeySectionTitle.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblHotkeySectionTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblHotkeySectionTitle.Location = new Point(40, currentY);
     lblHotkeySectionTitle.AutoSize = true;
@@ -2623,14 +2623,14 @@ public partial class DashboardForm : Form
 
     lblCurrentHotkey = new Label();
     lblCurrentHotkey.Text = "Current shortcut:";
-    lblCurrentHotkey.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblCurrentHotkey.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblCurrentHotkey.ForeColor = Color.FromArgb(100, 100, 100);
     lblCurrentHotkey.Location = new Point(40, currentY);
     lblCurrentHotkey.AutoSize = true;
     panelSettingsContent!.Controls.Add(lblCurrentHotkey);
 
     lblCurrentHotkeyValue = new Label();
-    lblCurrentHotkeyValue.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblCurrentHotkeyValue.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblCurrentHotkeyValue.ForeColor = Color.FromArgb(45, 45, 48);
     lblCurrentHotkeyValue.Location = new Point(180, currentY);
     lblCurrentHotkeyValue.AutoSize = true;
@@ -2639,7 +2639,7 @@ public partial class DashboardForm : Form
 
     btnChangeHotkey = new Button();
     btnChangeHotkey.Text = "Change shortcut";
-    btnChangeHotkey.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnChangeHotkey.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnChangeHotkey.FlatStyle = FlatStyle.Flat;
     btnChangeHotkey.FlatAppearance.BorderSize = 0;
     btnChangeHotkey.BackColor = Color.FromArgb(45, 45, 48);
@@ -2655,7 +2655,7 @@ public partial class DashboardForm : Form
 
     lblHotkeyDescription = new Label();
     lblHotkeyDescription.Text = "Hold the shortcut keys to start dictating. Release to stop and inject text.";
-    lblHotkeyDescription.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblHotkeyDescription.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblHotkeyDescription.ForeColor = Color.FromArgb(100, 100, 100);
     lblHotkeyDescription.Location = new Point(40, currentY);
     lblHotkeyDescription.AutoSize = true;
@@ -2666,7 +2666,7 @@ public partial class DashboardForm : Form
     // ===== Microphone Settings Section =====
     lblMicrophoneSectionTitle = new Label();
     lblMicrophoneSectionTitle.Text = "Microphone Settings";
-    lblMicrophoneSectionTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblMicrophoneSectionTitle.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblMicrophoneSectionTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblMicrophoneSectionTitle.Location = new Point(40, currentY);
     lblMicrophoneSectionTitle.AutoSize = true;
@@ -2675,14 +2675,14 @@ public partial class DashboardForm : Form
 
     lblMicrophoneDevice = new Label();
     lblMicrophoneDevice.Text = "Microphone:";
-    lblMicrophoneDevice.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblMicrophoneDevice.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblMicrophoneDevice.ForeColor = Color.FromArgb(100, 100, 100);
     lblMicrophoneDevice.Location = new Point(40, currentY);
     lblMicrophoneDevice.AutoSize = true;
     panelSettingsContent!.Controls.Add(lblMicrophoneDevice);
 
     cmbMicrophoneDevice = new ComboBox();
-    cmbMicrophoneDevice.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    cmbMicrophoneDevice.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     cmbMicrophoneDevice.DropDownStyle = ComboBoxStyle.DropDownList;
     cmbMicrophoneDevice.Size = new Size(400, 30);
     cmbMicrophoneDevice.Location = new Point(180, currentY - 3);
@@ -2694,7 +2694,7 @@ public partial class DashboardForm : Form
     // ===== Overlay Settings Section =====
     lblOverlaySectionTitle = new Label();
     lblOverlaySectionTitle.Text = "Overlay Settings";
-    lblOverlaySectionTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblOverlaySectionTitle.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblOverlaySectionTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblOverlaySectionTitle.Location = new Point(40, currentY);
     lblOverlaySectionTitle.AutoSize = true;
@@ -2703,14 +2703,14 @@ public partial class DashboardForm : Form
 
     lblOverlayPosition = new Label();
     lblOverlayPosition.Text = "Position:";
-    lblOverlayPosition.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    lblOverlayPosition.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblOverlayPosition.ForeColor = Color.FromArgb(100, 100, 100);
     lblOverlayPosition.Location = new Point(40, currentY);
     lblOverlayPosition.AutoSize = true;
     panelSettingsContent!.Controls.Add(lblOverlayPosition);
 
     cmbOverlayPosition = new ComboBox();
-    cmbOverlayPosition.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    cmbOverlayPosition.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     cmbOverlayPosition.DropDownStyle = ComboBoxStyle.DropDownList;
     cmbOverlayPosition.Size = new Size(250, 30);
     cmbOverlayPosition.Location = new Point(180, currentY - 3);
@@ -2723,7 +2723,7 @@ public partial class DashboardForm : Form
     // ===== Application Behavior Section =====
     lblApplicationSectionTitle = new Label();
     lblApplicationSectionTitle.Text = "Application Behavior";
-    lblApplicationSectionTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblApplicationSectionTitle.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblApplicationSectionTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblApplicationSectionTitle.Location = new Point(40, currentY);
     lblApplicationSectionTitle.AutoSize = true;
@@ -2732,7 +2732,7 @@ public partial class DashboardForm : Form
 
     chkStartMinimized = new CheckBox();
     chkStartMinimized.Text = "Start minimized";
-    chkStartMinimized.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    chkStartMinimized.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     chkStartMinimized.ForeColor = Color.FromArgb(45, 45, 48);
     chkStartMinimized.Location = new Point(40, currentY);
     chkStartMinimized.AutoSize = true;
@@ -2742,7 +2742,7 @@ public partial class DashboardForm : Form
 
     chkMinimizeToTray = new CheckBox();
     chkMinimizeToTray.Text = "Minimize to system tray";
-    chkMinimizeToTray.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    chkMinimizeToTray.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     chkMinimizeToTray.ForeColor = Color.FromArgb(45, 45, 48);
     chkMinimizeToTray.Location = new Point(40, currentY);
     chkMinimizeToTray.AutoSize = true;
@@ -2753,7 +2753,7 @@ public partial class DashboardForm : Form
     // ===== Data Management Section =====
     lblDataSectionTitle = new Label();
     lblDataSectionTitle.Text = "Data Management";
-    lblDataSectionTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblDataSectionTitle.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblDataSectionTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblDataSectionTitle.Location = new Point(40, currentY);
     lblDataSectionTitle.AutoSize = true;
@@ -2769,7 +2769,7 @@ public partial class DashboardForm : Form
 
     btnClearSpeechHistory = new Button();
     btnClearSpeechHistory.Text = "Clear Speech History";
-    btnClearSpeechHistory.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClearSpeechHistory.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnClearSpeechHistory.FlatStyle = FlatStyle.Flat;
     btnClearSpeechHistory.FlatAppearance.BorderSize = 0;
     btnClearSpeechHistory.BackColor = Color.White;
@@ -2784,7 +2784,7 @@ public partial class DashboardForm : Form
 
     btnClearDictionary = new Button();
     btnClearDictionary.Text = "Clear Dictionary";
-    btnClearDictionary.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClearDictionary.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnClearDictionary.FlatStyle = FlatStyle.Flat;
     btnClearDictionary.FlatAppearance.BorderSize = 0;
     btnClearDictionary.BackColor = Color.White;
@@ -2799,7 +2799,7 @@ public partial class DashboardForm : Form
 
     btnClearSnippets = new Button();
     btnClearSnippets.Text = "Clear Snippets";
-    btnClearSnippets.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClearSnippets.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnClearSnippets.FlatStyle = FlatStyle.Flat;
     btnClearSnippets.FlatAppearance.BorderSize = 0;
     btnClearSnippets.BackColor = Color.White;
@@ -2814,7 +2814,7 @@ public partial class DashboardForm : Form
 
     btnExportData = new Button();
     btnExportData.Text = "Export Data";
-    btnExportData.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnExportData.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnExportData.FlatStyle = FlatStyle.Flat;
     btnExportData.FlatAppearance.BorderSize = 0;
     btnExportData.BackColor = Color.FromArgb(45, 45, 48);
@@ -3003,7 +3003,7 @@ public partial class DashboardForm : Form
     // Title label
     Label lblTitle = new Label();
     lblTitle.Text = "Change Push-to-Talk Shortcut";
-    lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point);
+    lblTitle.Font = new Font("Poppins", 16F, FontStyle.Bold, GraphicsUnit.Point);
     lblTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblTitle.Location = new Point(20, 20);
     lblTitle.AutoSize = true;
@@ -3011,7 +3011,7 @@ public partial class DashboardForm : Form
     // Close button
     Button btnClose = new Button();
     btnClose.Text = "×";
-    btnClose.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClose.Font = new Font("Poppins", 18F, FontStyle.Regular, GraphicsUnit.Point);
     btnClose.FlatStyle = FlatStyle.Flat;
     btnClose.FlatAppearance.BorderSize = 0;
     btnClose.BackColor = Color.Transparent;
@@ -3027,7 +3027,7 @@ public partial class DashboardForm : Form
     // Instructions label
     Label lblInstructions = new Label();
     lblInstructions.Text = "Press the key combination you want to use:";
-    lblInstructions.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+    lblInstructions.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
     lblInstructions.ForeColor = Color.FromArgb(100, 100, 100);
     lblInstructions.Location = new Point(20, 60);
     lblInstructions.AutoSize = true;
@@ -3035,7 +3035,7 @@ public partial class DashboardForm : Form
     // Display area for captured keys
     Label lblHotkeyDisplay = new Label();
     lblHotkeyDisplay.Text = "Press keys...";
-    lblHotkeyDisplay.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+    lblHotkeyDisplay.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblHotkeyDisplay.ForeColor = Color.FromArgb(45, 45, 48);
     lblHotkeyDisplay.Location = new Point(20, 90);
     lblHotkeyDisplay.AutoSize = true;
@@ -3045,7 +3045,7 @@ public partial class DashboardForm : Form
     // Warning label
     Label lblWarning = new Label();
     lblWarning.Text = "At least one modifier key (Ctrl, Alt, Shift, or Win) must be pressed.";
-    lblWarning.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+    lblWarning.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point);
     lblWarning.ForeColor = Color.FromArgb(100, 100, 100);
     lblWarning.Location = new Point(20, 130);
     lblWarning.AutoSize = true;
@@ -3056,7 +3056,7 @@ public partial class DashboardForm : Form
     btnCancel.Text = "Cancel";
     btnCancel.Location = new Point(290, 180);
     btnCancel.Size = new Size(80, 28);
-    btnCancel.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnCancel.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnCancel.FlatStyle = FlatStyle.Flat;
     btnCancel.FlatAppearance.BorderSize = 0;
     btnCancel.BackColor = Color.FromArgb(235, 235, 235);
@@ -3072,7 +3072,7 @@ public partial class DashboardForm : Form
     btnSave.Text = "Save";
     btnSave.Location = new Point(380, 180);
     btnSave.Size = new Size(100, 28);
-    btnSave.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnSave.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnSave.FlatStyle = FlatStyle.Flat;
     btnSave.FlatAppearance.BorderSize = 0;
     btnSave.BackColor = Color.FromArgb(45, 45, 48);

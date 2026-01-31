@@ -1,4 +1,4 @@
-﻿namespace WinFormTest;
+namespace WinFormTest;
 
 partial class Form1
 {
@@ -44,7 +44,7 @@ partial class Form1
     // lblTitle
     // 
     lblTitle.AutoSize = true;
-    lblTitle.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point);
+    lblTitle.Font = new Font("Poppins", 24F, FontStyle.Regular, GraphicsUnit.Point);
     lblTitle.ForeColor = Color.FromArgb(45, 45, 48);
     lblTitle.Location = new Point(0, 80);
     lblTitle.Name = "lblTitle";
@@ -56,7 +56,7 @@ partial class Form1
     // lblUsername
     // 
     lblUsername.AutoSize = true;
-    lblUsername.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+    lblUsername.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point);
     lblUsername.ForeColor = Color.FromArgb(100, 100, 100);
     lblUsername.Location = new Point(0, 180);
     lblUsername.Name = "lblUsername";
@@ -69,7 +69,7 @@ partial class Form1
     // 
     txtUsername.BackColor = Color.White;
     txtUsername.BorderStyle = BorderStyle.None;
-    txtUsername.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    txtUsername.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     txtUsername.ForeColor = Color.FromArgb(45, 45, 48);
     txtUsername.Location = new Point(0, 200);
     txtUsername.Name = "txtUsername";
@@ -87,7 +87,7 @@ partial class Form1
     // lblPassword
     // 
     lblPassword.AutoSize = true;
-    lblPassword.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+    lblPassword.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point);
     lblPassword.ForeColor = Color.FromArgb(100, 100, 100);
     lblPassword.Location = new Point(0, 250);
     lblPassword.Name = "lblPassword";
@@ -100,7 +100,7 @@ partial class Form1
     // 
     txtPassword.BackColor = Color.White;
     txtPassword.BorderStyle = BorderStyle.None;
-    txtPassword.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    txtPassword.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     txtPassword.ForeColor = Color.FromArgb(45, 45, 48);
     txtPassword.Location = new Point(0, 270);
     txtPassword.Name = "txtPassword";
@@ -121,7 +121,7 @@ partial class Form1
     btnLogin.BackColor = Color.FromArgb(45, 45, 48);
     btnLogin.FlatAppearance.BorderSize = 0;
     btnLogin.FlatStyle = FlatStyle.Flat;
-    btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnLogin.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     btnLogin.ForeColor = Color.White;
     btnLogin.Location = new Point(0, 320);
     btnLogin.Name = "btnLogin";
@@ -138,7 +138,7 @@ partial class Form1
     btnClose.BackColor = Color.Transparent;
     btnClose.FlatAppearance.BorderSize = 0;
     btnClose.FlatStyle = FlatStyle.Flat;
-    btnClose.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+    btnClose.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point);
     btnClose.ForeColor = Color.FromArgb(100, 100, 100);
     btnClose.Location = new Point(370, 0);
     btnClose.Name = "btnClose";
@@ -155,7 +155,7 @@ partial class Form1
     btnMinimize.BackColor = Color.Transparent;
     btnMinimize.FlatAppearance.BorderSize = 0;
     btnMinimize.FlatStyle = FlatStyle.Flat;
-    btnMinimize.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+    btnMinimize.Font = new Font("Poppins", 14F, FontStyle.Regular, GraphicsUnit.Point);
     btnMinimize.ForeColor = Color.FromArgb(100, 100, 100);
     btnMinimize.Location = new Point(340, 0);
     btnMinimize.Name = "btnMinimize";
