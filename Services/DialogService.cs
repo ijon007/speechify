@@ -175,14 +175,21 @@ public static class DialogService
         
         Form dialog = CreateDialogForm(new Size(500, 280));
         Form backdrop = CreateBackdrop(parent, dialog);
-        
+
+        const int padding = 20;
+        const int afterTitleGap = 50;
+        const int afterLabelGap = 22;
+        const int afterControlGap = 12;
+        int y = padding;
+
         // Title label
         Label lblTitle = new Label();
         lblTitle.Text = isAdding ? "Add new snippet" : "Edit snippet";
         lblTitle.Font = UIFonts.Heading;
         lblTitle.ForeColor = UIColors.DarkText;
-        lblTitle.Location = new Point(20, 20);
+        lblTitle.Location = new Point(padding, y);
         lblTitle.AutoSize = true;
+        y += Math.Max(afterTitleGap, lblTitle.PreferredHeight + 10);
 
         // Close button
         Button btnClose = CreateCloseButton(dialog);
@@ -192,40 +199,44 @@ public static class DialogService
         lblShortcutLabel.Text = "Shortcut word:";
         lblShortcutLabel.Font = UIFonts.Medium;
         lblShortcutLabel.ForeColor = UIColors.DarkText;
-        lblShortcutLabel.Location = new Point(17, 60);
+        lblShortcutLabel.Location = new Point(17, y);
         lblShortcutLabel.AutoSize = true;
+        y += afterLabelGap;
 
         // Shortcut input
         TextBox txtShortcut = new TextBox();
-        txtShortcut.Location = new Point(20, 80);
+        txtShortcut.Location = new Point(padding, y);
         txtShortcut.Size = new Size(460, 25);
         txtShortcut.Font = UIFonts.Body;
         txtShortcut.BorderStyle = BorderStyle.FixedSingle;
         txtShortcut.Text = initialShortcut;
         if (isAdding)
             txtShortcut.SelectAll();
+        y += 25 + afterControlGap;
 
         // Replacement label
         Label lblReplacementLabel = new Label();
         lblReplacementLabel.Text = "Replacement text:";
         lblReplacementLabel.Font = UIFonts.Medium;
         lblReplacementLabel.ForeColor = UIColors.DarkText;
-        lblReplacementLabel.Location = new Point(17, 115);
+        lblReplacementLabel.Location = new Point(17, y);
         lblReplacementLabel.AutoSize = true;
+        y += afterLabelGap;
 
         // Replacement input (multiline for longer text)
         TextBox txtReplacement = new TextBox();
-        txtReplacement.Location = new Point(20, 135);
+        txtReplacement.Location = new Point(padding, y);
         txtReplacement.Size = new Size(460, 60);
         txtReplacement.Font = UIFonts.Body;
         txtReplacement.BorderStyle = BorderStyle.FixedSingle;
         txtReplacement.Multiline = true;
         txtReplacement.Text = initialReplacement;
         txtReplacement.ScrollBars = ScrollBars.None;
+        y += 60 + 16;
 
         // Cancel and Save buttons
-        Button btnCancel = CreateCancelButton(290, 210);
-        Button btnSave = CreateSaveButton(380, 210, isAdding);
+        Button btnCancel = CreateCancelButton(290, y);
+        Button btnSave = CreateSaveButton(380, y, isAdding);
 
         // Add controls
         dialog.Controls.Add(lblTitle);

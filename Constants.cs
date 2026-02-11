@@ -47,8 +47,8 @@ public static class UILayout
   // Button sizes
   public static readonly Size IconButtonSize = new Size(30, 30);
   public static readonly Size StandardButtonSize = new Size(100, 35);
-  public static readonly Size DialogButtonSize = new Size(80, 28);
-  public static readonly Size DialogSaveButtonSize = new Size(100, 28);
+  public static readonly Size DialogButtonSize = new Size(100, 32);
+  public static readonly Size DialogSaveButtonSize = new Size(100, 32);
   
   // Padding
   public static readonly Padding PagePadding = new Padding(40, 60, 40, 50);
@@ -71,5 +71,5 @@ public static class UILayout
 
 public static class DatabaseConstants
 {
-  public const string ConnectionString = @"Data Source=localhost\SQLEXPRESS01;Initial Catalog=textifyDB;Integrated Security=True;TrustServerCertificate=True;";
+  public const string ConnectionString = @"Data Source=localhost\SQLEXPRESS;Initial Catalog=textifyDB;Integrated Security=True;TrustServerCertificate=True;";
 }

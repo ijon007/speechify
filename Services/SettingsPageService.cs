@@ -70,7 +70,7 @@ public class SettingsPageService
         const int paddingBottom = 50;
         const int sectionSpacing = 44;
         const int labelGap = 10;
-        const int afterSectionTitle = 34;
+        const int afterSectionTitle = 50;
         const int afterSubLabel = 28;
         const int afterControl = 10;
         int y = 0;
@@ -108,7 +108,7 @@ public class SettingsPageService
         lblHotkeySectionTitle.Location = new Point(0, y);
         lblHotkeySectionTitle.AutoSize = true;
         panelSettingsContent.Controls.Add(lblHotkeySectionTitle);
-        y += Math.Max(afterSectionTitle, lblHotkeySectionTitle.PreferredHeight + 8);
+        y += Math.Max(afterSectionTitle, lblHotkeySectionTitle.PreferredHeight + 10);
 
         lblCurrentHotkey = new Label();
         lblCurrentHotkey.Text = "Current hotkey";
@@ -161,7 +161,7 @@ public class SettingsPageService
         lblMicrophoneSectionTitle.Location = new Point(0, y);
         lblMicrophoneSectionTitle.AutoSize = true;
         panelSettingsContent.Controls.Add(lblMicrophoneSectionTitle);
-        y += afterSectionTitle;
+        y += Math.Max(afterSectionTitle, lblMicrophoneSectionTitle.PreferredHeight + 10);
 
         lblMicrophoneDevice = new Label();
         lblMicrophoneDevice.Text = "Device";
@@ -203,7 +203,7 @@ public class SettingsPageService
         lblOverlaySectionTitle.Location = new Point(0, y);
         lblOverlaySectionTitle.AutoSize = true;
         panelSettingsContent.Controls.Add(lblOverlaySectionTitle);
-        y += afterSectionTitle;
+        y += Math.Max(afterSectionTitle, lblOverlaySectionTitle.PreferredHeight + 10);
 
         lblOverlayPosition = new Label();
         lblOverlayPosition.Text = "Position";
@@ -237,7 +237,7 @@ public class SettingsPageService
         lblApplicationSectionTitle.Location = new Point(0, y);
         lblApplicationSectionTitle.AutoSize = true;
         panelSettingsContent.Controls.Add(lblApplicationSectionTitle);
-        y += afterSectionTitle;
+        y += Math.Max(afterSectionTitle, lblApplicationSectionTitle.PreferredHeight + 10);
 
         chkStartMinimized = new CheckBox();
         chkStartMinimized.Text = "Start minimized";
@@ -270,7 +270,7 @@ public class SettingsPageService
         lblDataSectionTitle.Location = new Point(0, y);
         lblDataSectionTitle.AutoSize = true;
         panelSettingsContent.Controls.Add(lblDataSectionTitle);
-        y += afterSectionTitle + labelGap;
+        y += Math.Max(afterSectionTitle + labelGap, lblDataSectionTitle.PreferredHeight + 10);
 
         btnClearSpeechHistory = new Button();
         btnClearSpeechHistory.Text = "Clear speech history";

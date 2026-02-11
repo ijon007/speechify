@@ -156,7 +156,7 @@ public class StylePageService
         lblSubtitle.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point);
         lblSubtitle.ForeColor = Color.FromArgb(100, 100, 100);
         lblSubtitle.BackColor = Color.White;
-        lblSubtitle.Location = new Point(padding, padding + 35);
+        lblSubtitle.Location = new Point(padding, padding + 58);
         lblSubtitle.AutoSize = true;
         lblSubtitle.Name = $"lbl{styleValue}Subtitle";
         lblSubtitle.Cursor = Cursors.Hand;
@@ -164,7 +164,7 @@ public class StylePageService
         lblSubtitle.Click += StyleCard_Click;
 
         // Message bubble with example text
-        Panel messageBubble = CreateMessageBubble(exampleText, padding, padding + 70, width - (padding * 2), height - padding - (padding + 70), styleValue);
+        Panel messageBubble = CreateMessageBubble(exampleText, padding, padding + 94, width - (padding * 2), height - padding - (padding + 94), styleValue);
         messageBubble.Name = $"panel{styleValue}MessageBubble";
         messageBubble.Cursor = Cursors.Hand;
         messageBubble.Tag = styleValue;

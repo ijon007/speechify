@@ -79,9 +79,9 @@ partial class DashboardForm
     // 
     // picLogo
     // 
-    picLogo.Location = new Point(24, 11);
+    picLogo.Location = new Point(20, 6);
     picLogo.Name = "picLogo";
-    picLogo.Size = new Size(20, 20);
+    picLogo.Size = new Size(28, 28);
     picLogo.SizeMode = PictureBoxSizeMode.StretchImage;
     picLogo.TabIndex = 0;
     picLogo.TabStop = false;
@@ -91,7 +91,7 @@ partial class DashboardForm
     lblLogo.AutoSize = true;
     lblLogo.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point);
     lblLogo.ForeColor = Color.FromArgb(45, 45, 48);
-    lblLogo.Location = new Point(42, 10);
+    lblLogo.Location = new Point(52, 9);
     lblLogo.Name = "lblLogo";
     lblLogo.Size = new Size(45, 21);
     lblLogo.TabIndex = 1;
@@ -105,8 +105,8 @@ partial class DashboardForm
     lblNavHome.ForeColor = Color.FromArgb(45, 45, 48);
     lblNavHome.Location = new Point(10, 40);
     lblNavHome.Name = "lblNavHome";
-    lblNavHome.Padding = new Padding(10, 9, 10, 8);
-    lblNavHome.Size = new Size(180, 40);
+    lblNavHome.Padding = new Padding(10, 12, 10, 12);
+    lblNavHome.Size = new Size(180, 60);
     lblNavHome.TabIndex = 2;
     lblNavHome.Text = "🏠 Home";
     lblNavHome.TextAlign = ContentAlignment.MiddleLeft;
@@ -119,10 +119,10 @@ partial class DashboardForm
     lblNavDictionary.Cursor = Cursors.Hand;
     lblNavDictionary.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavDictionary.ForeColor = Color.FromArgb(100, 100, 100);
-    lblNavDictionary.Location = new Point(10, 80);
+    lblNavDictionary.Location = new Point(10, 96);
     lblNavDictionary.Name = "lblNavDictionary";
-    lblNavDictionary.Padding = new Padding(10, 9, 10, 8);
-    lblNavDictionary.Size = new Size(180, 40);
+    lblNavDictionary.Padding = new Padding(10, 12, 10, 12);
+    lblNavDictionary.Size = new Size(180, 60);
     lblNavDictionary.TabIndex = 3;
     lblNavDictionary.Text = "📚 Dictionary";
     lblNavDictionary.TextAlign = ContentAlignment.MiddleLeft;
@@ -134,10 +134,10 @@ partial class DashboardForm
     lblNavSnippets.Cursor = Cursors.Hand;
     lblNavSnippets.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavSnippets.ForeColor = Color.FromArgb(100, 100, 100);
-    lblNavSnippets.Location = new Point(10, 120);
+    lblNavSnippets.Location = new Point(10, 152);
     lblNavSnippets.Name = "lblNavSnippets";
-    lblNavSnippets.Padding = new Padding(10, 9, 10, 8);
-    lblNavSnippets.Size = new Size(180, 40);
+    lblNavSnippets.Padding = new Padding(10, 12, 10, 12);
+    lblNavSnippets.Size = new Size(180, 60);
     lblNavSnippets.TabIndex = 4;
     lblNavSnippets.Text = "📝 Snippets";
     lblNavSnippets.TextAlign = ContentAlignment.MiddleLeft;
@@ -149,10 +149,10 @@ partial class DashboardForm
     lblNavStyle.Cursor = Cursors.Hand;
     lblNavStyle.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavStyle.ForeColor = Color.FromArgb(100, 100, 100);
-    lblNavStyle.Location = new Point(10, 160);
+    lblNavStyle.Location = new Point(10, 208);
     lblNavStyle.Name = "lblNavStyle";
-    lblNavStyle.Padding = new Padding(10, 9, 10, 8);
-    lblNavStyle.Size = new Size(180, 40);
+    lblNavStyle.Padding = new Padding(10, 12, 10, 12);
+    lblNavStyle.Size = new Size(180, 52);
     lblNavStyle.TabIndex = 5;
     lblNavStyle.Text = "🎨 Style";
     lblNavStyle.TextAlign = ContentAlignment.MiddleLeft;
@@ -164,10 +164,10 @@ partial class DashboardForm
     lblNavSettings.Cursor = Cursors.Hand;
     lblNavSettings.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
     lblNavSettings.ForeColor = Color.FromArgb(100, 100, 100);
-    lblNavSettings.Location = new Point(10, 200);
+    lblNavSettings.Location = new Point(10, 264);
     lblNavSettings.Name = "lblNavSettings";
-    lblNavSettings.Padding = new Padding(10, 9, 10, 8);
-    lblNavSettings.Size = new Size(180, 40);
+    lblNavSettings.Padding = new Padding(10, 12, 10, 12);
+    lblNavSettings.Size = new Size(180, 60);
     lblNavSettings.TabIndex = 6;
     lblNavSettings.Text = "⚙️ Settings";
     lblNavSettings.TextAlign = ContentAlignment.MiddleLeft;
