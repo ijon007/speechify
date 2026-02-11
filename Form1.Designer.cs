@@ -37,6 +37,7 @@ partial class Form1
     txtPassword = new TextBox();
     underlinePassword = new Panel();
     btnLogin = new Button();
+    btnSignUp = new Button();
     btnClose = new Button();
     btnMinimize = new Button();
     SuspendLayout();
@@ -133,6 +134,24 @@ partial class Form1
     btnLogin.MouseEnter += btnLogin_MouseEnter;
     btnLogin.MouseLeave += btnLogin_MouseLeave;
     // 
+    // btnSignUp
+    // 
+    btnSignUp.BackColor = Color.Transparent;
+    btnSignUp.FlatAppearance.BorderColor = Color.FromArgb(45, 45, 48);
+    btnSignUp.FlatAppearance.BorderSize = 1;
+    btnSignUp.FlatStyle = FlatStyle.Flat;
+    btnSignUp.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
+    btnSignUp.ForeColor = Color.FromArgb(45, 45, 48);
+    btnSignUp.Location = new Point(0, 368);
+    btnSignUp.Name = "btnSignUp";
+    btnSignUp.Size = new Size(300, 42);
+    btnSignUp.TabIndex = 10;
+    btnSignUp.Text = "Sign Up";
+    btnSignUp.UseVisualStyleBackColor = false;
+    btnSignUp.Click += btnSignUp_Click;
+    btnSignUp.MouseEnter += btnSignUp_MouseEnter;
+    btnSignUp.MouseLeave += btnSignUp_MouseLeave;
+    // 
     // btnClose
     // 
     btnClose.BackColor = Color.Transparent;
@@ -174,6 +193,7 @@ partial class Form1
     ClientSize = new Size(400, 500);
     Controls.Add(btnMinimize);
     Controls.Add(btnClose);
+    Controls.Add(btnSignUp);
     Controls.Add(btnLogin);
     Controls.Add(underlinePassword);
     Controls.Add(txtPassword);
@@ -198,6 +218,7 @@ partial class Form1
   private TextBox txtPassword;
   private Panel underlinePassword;
   private Button btnLogin;
+  private Button btnSignUp;
   private Button btnClose;
   private Button btnMinimize;
 

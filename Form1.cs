@@ -14,10 +14,13 @@ public partial class Form1 : Form
     SetupWindowControls();
     
     // Set custom icon from assets folder
-    string iconPath = Path.Combine(Application.StartupPath, "assets", "cp-black.ico");
+    string iconPath = Path.Combine(Application.StartupPath, "assets", "logo.png");
     if (File.Exists(iconPath))
     {
-      this.Icon = new Icon(iconPath);
+      using (var bmp = new Bitmap(iconPath))
+      {
+        this.Icon = (Icon)Icon.FromHandle(bmp.GetHicon()).Clone();
+      }
     }
   }
   
@@ -102,6 +105,7 @@ public partial class Form1 : Form
     CenterControl(txtPassword);
     CenterControl(underlinePassword);
     CenterControl(btnLogin);
+    CenterControl(btnSignUp);
   }
 
   private void CenterControl(Control control)
@@ -195,5 +199,21 @@ public partial class Form1 : Form
   private void btnLogin_MouseLeave(object sender, EventArgs e)
   {
     btnLogin.BackColor = Color.FromArgb(45, 45, 48);
+  }
+
+  private void btnSignUp_Click(object? sender, EventArgs e)
+  {
+    using var signUpForm = new SignUpForm(connectionString);
+    signUpForm.ShowDialog();
+  }
+
+  private void btnSignUp_MouseEnter(object? sender, EventArgs e)
+  {
+    btnSignUp.BackColor = Color.FromArgb(240, 240, 240);
+  }
+
+  private void btnSignUp_MouseLeave(object? sender, EventArgs e)
+  {
+    btnSignUp.BackColor = Color.Transparent;
   }
 }

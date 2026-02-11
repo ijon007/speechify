@@ -46,7 +46,7 @@ partial class SpeechOverlayForm
     panelMain.Location = new Point(0, 0);
     panelMain.Name = "panelMain";
     panelMain.Padding = new Padding(0);
-    panelMain.Size = new Size(60, 20);
+    panelMain.Size = new Size(50, 20);
     panelMain.TabIndex = 0;
     panelMain.Paint += panelMain_Paint;
     // 
@@ -78,7 +78,7 @@ partial class SpeechOverlayForm
     // 
     AutoScaleMode = AutoScaleMode.Font;
     BackColor = Color.Black;
-    ClientSize = new Size(60, 20);
+    ClientSize = new Size(50, 20);
     Controls.Add(panelMain);
     FormBorderStyle = FormBorderStyle.None;
     StartPosition = FormStartPosition.Manual;

@@ -133,7 +133,7 @@ public partial class SpeechOverlayForm : Form
 
   private void ResizeFormForState(OverlayState state)
   {
-    int width = 60;
+    int width = 50;
     int height;
     
     if (state == OverlayState.Idle)
@@ -227,59 +227,30 @@ public partial class SpeechOverlayForm : Form
     Graphics g = e.Graphics;
     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
     
-    // Thin border around entire pill - white outer, black inner
     int r = Math.Min(panelMain.Height / 2, 5);
-    float borderWidth = 1f; // Thin border
     
-    // White border (outer) - covers entire area including all edges
-    using (var outer = new System.Drawing.Drawing2D.GraphicsPath())
+    // Rounded rect path for fill and border
+    using (var path = new System.Drawing.Drawing2D.GraphicsPath())
     {
-      // Top-left corner
-      outer.AddArc(0, 0, r * 2, r * 2, 180, 90);
-      // Top edge
-      outer.AddLine(r, 0, panelMain.Width - r, 0);
-      // Top-right corner
-      outer.AddArc(panelMain.Width - r * 2, 0, r * 2, r * 2, 270, 90);
-      // Right edge
-      outer.AddLine(panelMain.Width, r, panelMain.Width, panelMain.Height - r);
-      // Bottom-right corner
-      outer.AddArc(panelMain.Width - r * 2, panelMain.Height - r * 2, r * 2, r * 2, 0, 90);
-      // Bottom edge
-      outer.AddLine(panelMain.Width - r, panelMain.Height, r, panelMain.Height);
-      // Bottom-left corner
-      outer.AddArc(0, panelMain.Height - r * 2, r * 2, r * 2, 90, 90);
-      // Left edge
-      outer.AddLine(0, panelMain.Height - r, 0, r);
-      outer.CloseAllFigures();
-      g.FillPath(new SolidBrush(Color.White), outer);
-    }
-    
-    // Black fill (inner) - creates thin border effect, offset by borderWidth on all sides
-    using (var inner = new System.Drawing.Drawing2D.GraphicsPath())
-    {
-      float offset = borderWidth;
-      float innerWidth = panelMain.Width - (offset * 2);
-      float innerHeight = panelMain.Height - (offset * 2);
-      int innerR = Math.Max(0, r - (int)borderWidth);
+      path.AddArc(0, 0, r * 2, r * 2, 180, 90);
+      path.AddLine(r, 0, panelMain.Width - r, 0);
+      path.AddArc(panelMain.Width - r * 2, 0, r * 2, r * 2, 270, 90);
+      path.AddLine(panelMain.Width, r, panelMain.Width, panelMain.Height - r);
+      path.AddArc(panelMain.Width - r * 2, panelMain.Height - r * 2, r * 2, r * 2, 0, 90);
+      path.AddLine(panelMain.Width - r, panelMain.Height, r, panelMain.Height);
+      path.AddArc(0, panelMain.Height - r * 2, r * 2, r * 2, 90, 90);
+      path.AddLine(0, panelMain.Height - r, 0, r);
+      path.CloseAllFigures();
       
-      // Top-left corner
-      inner.AddArc(offset, offset, innerR * 2, innerR * 2, 180, 90);
-      // Top edge
-      inner.AddLine(offset + innerR, offset, offset + innerWidth - innerR, offset);
-      // Top-right corner
-      inner.AddArc(offset + innerWidth - innerR * 2, offset, innerR * 2, innerR * 2, 270, 90);
-      // Right edge
-      inner.AddLine(offset + innerWidth, offset + innerR, offset + innerWidth, offset + innerHeight - innerR);
-      // Bottom-right corner
-      inner.AddArc(offset + innerWidth - innerR * 2, offset + innerHeight - innerR * 2, innerR * 2, innerR * 2, 0, 90);
-      // Bottom edge
-      inner.AddLine(offset + innerWidth - innerR, offset + innerHeight, offset + innerR, offset + innerHeight);
-      // Bottom-left corner
-      inner.AddArc(offset, offset + innerHeight - innerR * 2, innerR * 2, innerR * 2, 90, 90);
-      // Left edge
-      inner.AddLine(offset, offset + innerHeight - innerR, offset, offset + innerR);
-      inner.CloseAllFigures();
-      g.FillPath(new SolidBrush(Color.Black), inner);
+      g.FillPath(new SolidBrush(Color.Black), path);
+      
+      // Idle: light grey border for clearer definition. Other states: thin white outline.
+      bool isIdle = currentState == OverlayState.Idle;
+      using (var pen = new Pen(isIdle ? Color.FromArgb(200, 200, 200) : Color.White, 1f))
+      {
+        pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+        g.DrawPath(pen, path);
+      }
     }
     
     // Draw waves when listening

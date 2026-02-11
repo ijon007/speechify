@@ -71,5 +71,5 @@ public static class UILayout
 
 public static class DatabaseConstants
 {
-  public const string ConnectionString = @"Data Source=localhost\SQLEXPRESS;Initial Catalog=WinFormTest;Integrated Security=True;TrustServerCertificate=True;";
+  public const string ConnectionString = @"Data Source=localhost\SQLEXPRESS01;Initial Catalog=textifyDB;Integrated Security=True;TrustServerCertificate=True;";
 }

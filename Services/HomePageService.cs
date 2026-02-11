@@ -201,9 +201,13 @@ public class HomePageService
         btnCopy.Size = new Size(30, 30);
         btnCopy.FlatStyle = FlatStyle.Flat;
         btnCopy.FlatAppearance.BorderSize = 0;
+        btnCopy.FlatAppearance.BorderColor = Color.FromArgb(245, 245, 245);
+        btnCopy.FlatAppearance.MouseOverBackColor = Color.FromArgb(230, 230, 230);
+        btnCopy.FlatAppearance.MouseDownBackColor = Color.FromArgb(220, 220, 220);
         btnCopy.BackColor = Color.FromArgb(245, 245, 245);
         btnCopy.ForeColor = Color.FromArgb(100, 100, 100);
         btnCopy.Cursor = Cursors.Hand;
+        btnCopy.TabStop = false;
         btnCopy.Name = $"btnCopy_{id}";
         
         // Position button next to the text (right side)

@@ -33,7 +33,7 @@ This document maps where each component's code is located in the DashboardForm a
   - Font: Segoe UI, 16pt, Bold
 
 **Logo Loading Logic:** `DashboardForm.cs` Lines 30-55
-- Loads icon from `assets/cp-black.ico`
+- Loads icon from `assets/logo.png`
 - Sets form icon and PictureBox image
 
 ### Navigation Labels (Sidebar Items)

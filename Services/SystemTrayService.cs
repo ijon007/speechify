@@ -22,10 +22,13 @@ public class SystemTrayService
         notifyIcon.Text = "Textify";
         
         // Set icon from assets folder
-        string iconPath = Path.Combine(Application.StartupPath, "assets", "cp-black.ico");
+        string iconPath = Path.Combine(Application.StartupPath, "assets", "logo.png");
         if (File.Exists(iconPath))
         {
-            notifyIcon.Icon = new Icon(iconPath);
+            using (var bmp = new Bitmap(iconPath))
+            {
+                notifyIcon.Icon = (Icon)Icon.FromHandle(bmp.GetHicon()).Clone();
+            }
         }
         else
         {

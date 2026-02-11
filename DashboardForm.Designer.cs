@@ -19,12 +19,7 @@ partial class DashboardForm
       {
         components.Dispose();
       }
-      // Dispose NotifyIcon if it exists
-      if (this.notifyIcon != null)
-      {
-        this.notifyIcon.Visible = false;
-        this.notifyIcon.Dispose();
-      }
+      // NotifyIcon is owned and disposed by SystemTrayService
     }
     base.Dispose(disposing);
   }
@@ -116,9 +111,7 @@ partial class DashboardForm
     lblNavHome.Text = "🏠 Home";
     lblNavHome.TextAlign = ContentAlignment.MiddleLeft;
     lblNavHome.BackColor = Color.FromArgb(245, 245, 245);
-    lblNavHome.Click += navItem_Click;
-    lblNavHome.MouseEnter += navItem_MouseEnter;
-    lblNavHome.MouseLeave += navItem_MouseLeave;
+    // Nav events wired by NavigationService
     // 
     // lblNavDictionary
     // 
@@ -133,9 +126,7 @@ partial class DashboardForm
     lblNavDictionary.TabIndex = 3;
     lblNavDictionary.Text = "📚 Dictionary";
     lblNavDictionary.TextAlign = ContentAlignment.MiddleLeft;
-    lblNavDictionary.Click += navItem_Click;
-    lblNavDictionary.MouseEnter += navItem_MouseEnter;
-    lblNavDictionary.MouseLeave += navItem_MouseLeave;
+    // Nav events wired by NavigationService
     // 
     // lblNavSnippets
     // 
@@ -150,9 +141,7 @@ partial class DashboardForm
     lblNavSnippets.TabIndex = 4;
     lblNavSnippets.Text = "📝 Snippets";
     lblNavSnippets.TextAlign = ContentAlignment.MiddleLeft;
-    lblNavSnippets.Click += navItem_Click;
-    lblNavSnippets.MouseEnter += navItem_MouseEnter;
-    lblNavSnippets.MouseLeave += navItem_MouseLeave;
+    // Nav events wired by NavigationService
     // 
     // lblNavStyle
     // 
@@ -167,9 +156,7 @@ partial class DashboardForm
     lblNavStyle.TabIndex = 5;
     lblNavStyle.Text = "🎨 Style";
     lblNavStyle.TextAlign = ContentAlignment.MiddleLeft;
-    lblNavStyle.Click += navItem_Click;
-    lblNavStyle.MouseEnter += navItem_MouseEnter;
-    lblNavStyle.MouseLeave += navItem_MouseLeave;
+    // Nav events wired by NavigationService
     // 
     // lblNavSettings
     // 
@@ -184,9 +171,7 @@ partial class DashboardForm
     lblNavSettings.TabIndex = 6;
     lblNavSettings.Text = "⚙️ Settings";
     lblNavSettings.TextAlign = ContentAlignment.MiddleLeft;
-    lblNavSettings.Click += navItem_Click;
-    lblNavSettings.MouseEnter += navItem_MouseEnter;
-    lblNavSettings.MouseLeave += navItem_MouseLeave;
+    // Nav events wired by NavigationService
     // 
     // panelMain
     // 
@@ -335,9 +320,7 @@ partial class DashboardForm
     btnClose.TabStop = false;
     btnClose.Text = "×";
     btnClose.UseVisualStyleBackColor = false;
-    btnClose.Click += btnClose_Click;
-    btnClose.MouseEnter += btnClose_MouseEnter;
-    btnClose.MouseLeave += btnClose_MouseLeave;
+    // Close/minimize events wired by WindowControlsService
     // 
     // btnMinimize
     // 
@@ -353,9 +336,7 @@ partial class DashboardForm
     btnMinimize.TabStop = false;
     btnMinimize.Text = "−";
     btnMinimize.UseVisualStyleBackColor = false;
-    btnMinimize.Click += btnMinimize_Click;
-    btnMinimize.MouseEnter += btnMinimize_MouseEnter;
-    btnMinimize.MouseLeave += btnMinimize_MouseLeave;
+    // Close/minimize events wired by WindowControlsService
     // 
     // panelTopRibbon
     // 

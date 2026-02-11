@@ -40,29 +40,21 @@ public partial class DashboardForm : Form
     btnMinimize.TabStop = false;
     
     // Set custom icon from assets folder
-    string iconPath = Path.Combine(Application.StartupPath, "assets", "cp-black.ico");
+    string iconPath = Path.Combine(Application.StartupPath, "assets", "logo.png");
     if (File.Exists(iconPath))
     {
-      this.Icon = new Icon(iconPath);
+      using (var bmp = new Bitmap(iconPath))
+      {
+        this.Icon = (Icon)Icon.FromHandle(bmp.GetHicon()).Clone();
+      }
       // Load logo into PictureBox
       try
       {
-        using (Icon icon = new Icon(iconPath, 32, 32))
-        {
-          picLogo.Image = icon.ToBitmap();
-        }
+        picLogo.Image = Image.FromFile(iconPath);
       }
       catch
       {
-        // If loading fails, try loading as image directly
-        try
-        {
-          picLogo.Image = Image.FromFile(iconPath);
-        }
-        catch
-        {
-          // If both methods fail, leave PictureBox empty
-        }
+        // If loading fails, leave PictureBox empty
       }
     }
     
@@ -87,7 +79,7 @@ public partial class DashboardForm : Form
     systemTrayService.Initialize();
     
     // Initialize transcription correction service early (needed by page services)
-    transcriptionCorrectionService = new TranscriptionCorrectionService(databaseService);
+    transcriptionCorrectionService = new TranscriptionCorrectionService(databaseService!);
     
     // Initialize page services
     homePageService = new HomePageService(databaseService, username, panelHomePage, panelSpeechHistory, 
@@ -202,6 +194,10 @@ public partial class DashboardForm : Form
         overlayForm, dictionaryPageService, snippetsPageService, transcriptionCorrectionService, 
         username, this, panelSettingsPage);
       settingsPageService.Initialize();
+
+      var minimizeToTrayCheckbox = settingsPageService.GetMinimizeToTrayCheckbox();
+      if (minimizeToTrayCheckbox != null)
+        systemTrayService?.SetMinimizeToTrayCheckbox(minimizeToTrayCheckbox);
 
       // Load model asynchronously
       loadingUIService?.UpdateText("Loading Whisper model...");

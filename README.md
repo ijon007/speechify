@@ -160,7 +160,7 @@ WinFormTest/
 ├── DatabaseService.cs          # Database operations
 ├── WindowsApiHelper.cs         # Windows API interop
 └── assets/
-    └── cp-black.ico           # Application icon
+    └── logo.png               # Application icon
 ```
 
 ## Dependencies
